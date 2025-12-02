@@ -6,10 +6,11 @@ import com.reverso.exception.ResourceNotFoundException;
 import com.reverso.mapper.ServiceMapper;
 import com.reverso.model.Service;
 import com.reverso.model.ServiceCategory;
+import com.reverso.model.User;
 import com.reverso.repository.ServiceCategoryRepository;
 import com.reverso.repository.ServiceRepository;
+import com.reverso.repository.UserRepository;
 import com.reverso.service.interfaces.ServiceService;
-
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,13 +25,16 @@ public class ServiceServiceImpl implements ServiceService {
     
     private final ServiceRepository serviceRepository;
     private final ServiceCategoryRepository categoryRepository;
+    private final UserRepository userRepository;
     private final ServiceMapper serviceMapper;
     
     public ServiceServiceImpl(ServiceRepository serviceRepository,
                              ServiceCategoryRepository categoryRepository,
+                             UserRepository userRepository,
                              ServiceMapper serviceMapper) {
         this.serviceRepository = serviceRepository;
         this.categoryRepository = categoryRepository;
+        this.userRepository = userRepository;
         this.serviceMapper = serviceMapper;
     }
     
@@ -74,6 +78,12 @@ public class ServiceServiceImpl implements ServiceService {
         Service service = serviceMapper.toEntity(request);
         service.setCategory(category);
         
+        if (request.getCreatedByUserId() != null) {
+            User user = userRepository.findById(request.getCreatedByUserId())
+                .orElseThrow(() -> new ResourceNotFoundException("User", "id", request.getCreatedByUserId()));
+            service.setCreatedByUser(user);
+        }
+        
         if (service.getActive() == null) {
             service.setActive(true);
         }
@@ -86,11 +96,17 @@ public class ServiceServiceImpl implements ServiceService {
     public ServiceResponse updateService(UUID id, ServiceRequest request) {
         Service service = serviceRepository.findById(id)
             .orElseThrow(() -> new ResourceNotFoundException("Service", "id", id));
-        
+
         if (request.getCategoryId() != null && !request.getCategoryId().equals(service.getCategory().getId())) {
             ServiceCategory category = categoryRepository.findById(request.getCategoryId())
                 .orElseThrow(() -> new ResourceNotFoundException("ServiceCategory", "id", request.getCategoryId()));
             service.setCategory(category);
+        }
+
+        if (request.getCreatedByUserId() != null) {
+            User user = userRepository.findById(request.getCreatedByUserId())
+                .orElseThrow(() -> new ResourceNotFoundException("User", "id", request.getCreatedByUserId()));
+            service.setCreatedByUser(user);
         }
         
         serviceMapper.updateFromRequest(request, service);

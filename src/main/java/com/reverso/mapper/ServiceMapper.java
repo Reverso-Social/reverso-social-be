@@ -14,11 +14,13 @@ public interface ServiceMapper {
     @Mapping(target = "categoryId", source = "category.id")
     @Mapping(target = "categoryName", source = "category.name")
     @Mapping(target = "featuresCount", expression = "java(service.getFeatures() != null ? service.getFeatures().size() : 0)")
-    @Mapping(target = "createdByUserName", ignore = true)
+    @Mapping(target = "createdByUserId", source = "createdByUser.id")
+    @Mapping(target = "createdByUserName", source = "createdByUser.fullName")
     ServiceResponse toResponse(Service service);
     
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "category", ignore = true)
+    @Mapping(target = "createdByUser", ignore = true)
     @Mapping(target = "features", ignore = true)
     @Mapping(target = "createdAt", ignore = true)
     @Mapping(target = "updatedAt", ignore = true)
@@ -26,6 +28,7 @@ public interface ServiceMapper {
     
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "category", ignore = true)
+    @Mapping(target = "createdByUser", ignore = true)
     @Mapping(target = "features", ignore = true)
     @Mapping(target = "createdAt", ignore = true)
     @Mapping(target = "updatedAt", ignore = true)
