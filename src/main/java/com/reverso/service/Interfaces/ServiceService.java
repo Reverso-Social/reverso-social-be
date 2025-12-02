@@ -1,4 +1,4 @@
-package com.reverso.service.Interfaces;
+package com.reverso.service.interfaces;
 
 import com.reverso.dto.request.ServiceRequest;
 import com.reverso.dto.response.ServiceResponse;

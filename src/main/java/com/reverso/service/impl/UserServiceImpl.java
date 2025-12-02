@@ -5,12 +5,13 @@ import com.reverso.dto.UserDto;
 import com.reverso.mapper.UserMapper;
 import com.reverso.model.User;
 import com.reverso.repository.UserRepository;
-import com.reverso.service.UserService;
+import com.reverso.service.interfaces.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -36,14 +37,14 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserDto getById(Long id) {
+    public UserDto getById(UUID id) {
         User user = repository.findById(id)
                 .orElseThrow(() -> new RuntimeException("User not found"));
         return mapper.toDto(user);
     }
 
     @Override
-    public void delete(Long id) {
+    public void delete(UUID id) {
         repository.deleteById(id);
     }
 }

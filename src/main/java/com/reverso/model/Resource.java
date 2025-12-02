@@ -3,6 +3,7 @@ package com.reverso.model;
 import jakarta.persistence.*;
 import lombok.*;
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 @Entity
 @Table(name = "resources")
@@ -13,35 +14,51 @@ import java.time.LocalDateTime;
 public class Resource {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private UUID id;
 
     private String title;
 
     @Column(columnDefinition = "TEXT")
     private String description;
 
-    private String type; // GUIDE, REPORT, VIDEO
+    @Enumerated(EnumType.STRING)
+    private ResourceType type; // GUIDE, REPORT, ARTICLE, VIDEO, OTHER
 
+    @Column(name = "file_url")
     private String fileUrl;
 
+    @Column(name = "preview_image_url")
     private String previewImageUrl;
 
-    private Boolean isPublic;
+    @Column(name = "public")
+    @Builder.Default
+    private Boolean isPublic = false;
 
-    private Long userId;
+    @Column(name = "user_id")
+    private UUID userId;
 
+    @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
+    
+    @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
     @PrePersist
     public void onCreate() {
         this.createdAt = LocalDateTime.now();
         this.updatedAt = LocalDateTime.now();
+        if (this.isPublic == null) {
+            this.isPublic = false;
+        }
     }
 
     @PreUpdate
     public void onUpdate() {
         this.updatedAt = LocalDateTime.now();
+    }
+    
+    public enum ResourceType {
+        GUIDE, REPORT, ARTICLE, VIDEO, OTHER
     }
 }

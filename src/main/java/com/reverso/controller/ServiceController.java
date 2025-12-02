@@ -2,7 +2,8 @@ package com.reverso.controller;
 
 import com.reverso.dto.request.ServiceRequest;
 import com.reverso.dto.response.ServiceResponse;
-import com.reverso.service.Interfaces.ServiceService;
+import com.reverso.service.interfaces.ServiceService;
+
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;

@@ -5,11 +5,12 @@ import com.reverso.dto.ContactDto;
 import com.reverso.mapper.ContactMapper;
 import com.reverso.model.Contact;
 import com.reverso.repository.ContactRepository;
-import com.reverso.service.ContactService;
+import com.reverso.service.interfaces.ContactService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -34,23 +35,23 @@ public class ContactServiceImpl implements ContactService {
     }
 
     @Override
-    public ContactDto getById(Long id) {
+    public ContactDto getById(UUID id) {
         Contact contact = repository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Contact not found"));
         return mapper.toDto(contact);
     }
 
     @Override
-    public ContactDto updateStatus(Long id, String status) {
+    public ContactDto updateStatus(UUID id, String status) {
         Contact contact = repository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Contact not found"));
-        contact.setStatus(status);
+        contact.setStatus(Contact.ContactStatus.valueOf(status));
         repository.save(contact);
         return mapper.toDto(contact);
     }
 
     @Override
-    public void delete(Long id) {
+    public void delete(UUID id) {
         repository.deleteById(id);
     }
 }

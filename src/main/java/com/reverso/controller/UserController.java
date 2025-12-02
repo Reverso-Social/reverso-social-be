@@ -2,11 +2,13 @@ package com.reverso.controller;
 
 import com.reverso.dto.UserCreateDto;
 import com.reverso.dto.UserDto;
-import com.reverso.service.UserService;
+import com.reverso.service.interfaces.UserService;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/users")
@@ -26,12 +28,12 @@ public class UserController {
     }
 
     @GetMapping("/{id}")
-    public UserDto get(@PathVariable Long id) {
+    public UserDto get(@PathVariable UUID id) {
         return service.getById(id);
     }
 
     @DeleteMapping("/{id}")
-    public void delete(@PathVariable Long id) {
+    public void delete(@PathVariable UUID id) {
         service.delete(id);
     }
 }

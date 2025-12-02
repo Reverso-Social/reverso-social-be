@@ -3,6 +3,7 @@ package com.reverso.model;
 import jakarta.persistence.*;
 import lombok.*;
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 @Entity
 @Table(name = "contacts")
@@ -13,9 +14,10 @@ import java.time.LocalDateTime;
 public class Contact {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private UUID id;
 
+    @Column(name = "full_name")
     private String fullName;
 
     private String email;
@@ -23,24 +25,37 @@ public class Contact {
     @Column(columnDefinition = "TEXT")
     private String message;
 
+    @Column(name = "accepts_privacy")
     private Boolean acceptsPrivacy;
 
-    private String status; // PENDING, IN_PROGRESS, RESOLVED
+    @Enumerated(EnumType.STRING)
+    @Builder.Default
+    private ContactStatus status = ContactStatus.PENDING; // PENDING, IN_PROGRESS, RESOLVED
 
+    @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
+    
+    @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
-    private Long userId; // admin who handled the ticket (optional)
+    @Column(name = "user_id") 
+    private UUID userId;
 
     @PrePersist
     public void onCreate() {
         this.createdAt = LocalDateTime.now();
         this.updatedAt = LocalDateTime.now();
-        this.status = "PENDING";
+        if (this.status == null) {
+            this.status = ContactStatus.PENDING;
+        }
     }
 
     @PreUpdate
     public void onUpdate() {
         this.updatedAt = LocalDateTime.now();
+    }
+    
+    public enum ContactStatus {
+        PENDING, IN_PROGRESS, RESOLVED
     }
 }

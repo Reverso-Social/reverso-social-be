@@ -3,11 +3,13 @@ package com.reverso.controller;
 import com.reverso.dto.ResourceCreateDto;
 import com.reverso.dto.ResourceDto;
 import com.reverso.dto.ResourceUpdateDto;
-import com.reverso.service.ResourceService;
+import com.reverso.service.interfaces.ResourceService;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/resources")
@@ -37,17 +39,17 @@ public class ResourceController {
     }
 
     @GetMapping("/{id}")
-    public ResourceDto get(@PathVariable Long id) {
+    public ResourceDto get(@PathVariable UUID id) {
         return service.getById(id);
     }
 
     @PatchMapping("/{id}")
-    public ResourceDto update(@PathVariable Long id, @RequestBody ResourceUpdateDto dto) {
+    public ResourceDto update(@PathVariable UUID id, @RequestBody ResourceUpdateDto dto) {
         return service.update(id, dto);
     }
 
     @DeleteMapping("/{id}")
-    public void delete(@PathVariable Long id) {
+    public void delete(@PathVariable UUID id) {
         service.delete(id);
     }
 }

@@ -3,5 +3,7 @@ package com.reverso.repository;
 import com.reverso.model.Contact;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface ContactRepository extends JpaRepository<Contact, Long> {
+import java.util.UUID;
+
+public interface ContactRepository extends JpaRepository<Contact, UUID> {
 }

@@ -6,11 +6,12 @@ import com.reverso.dto.ResourceUpdateDto;
 import com.reverso.mapper.ResourceMapper;
 import com.reverso.model.Resource;
 import com.reverso.repository.ResourceRepository;
-import com.reverso.service.ResourceService;
+import com.reverso.service.interfaces.ResourceService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -50,14 +51,14 @@ public class ResourceServiceImpl implements ResourceService {
     }
 
     @Override
-    public ResourceDto getById(Long id) {
+    public ResourceDto getById(UUID id) {
         Resource resource = repository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Resource not found"));
         return mapper.toDto(resource);
     }
 
     @Override
-    public ResourceDto update(Long id, ResourceUpdateDto dto) {
+    public ResourceDto update(UUID id, ResourceUpdateDto dto) {
         Resource resource = repository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Resource not found"));
 
@@ -68,7 +69,7 @@ public class ResourceServiceImpl implements ResourceService {
     }
 
     @Override
-    public void delete(Long id) {
+    public void delete(UUID id) {
         repository.deleteById(id);
     }
 }

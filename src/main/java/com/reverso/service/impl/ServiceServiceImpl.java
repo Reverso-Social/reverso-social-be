@@ -8,7 +8,8 @@ import com.reverso.model.Service;
 import com.reverso.model.ServiceCategory;
 import com.reverso.repository.ServiceCategoryRepository;
 import com.reverso.repository.ServiceRepository;
-import com.reverso.service.Interfaces.ServiceService;
+import com.reverso.service.interfaces.ServiceService;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.transaction.annotation.Transactional;

@@ -6,7 +6,7 @@ import com.reverso.exception.ResourceNotFoundException;
 import com.reverso.mapper.ServiceCategoryMapper;
 import com.reverso.model.ServiceCategory;
 import com.reverso.repository.ServiceCategoryRepository;
-import com.reverso.service.Interfaces.ServiceCategoryService;
+import com.reverso.service.interfaces.ServiceCategoryService;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

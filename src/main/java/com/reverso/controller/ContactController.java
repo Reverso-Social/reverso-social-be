@@ -2,11 +2,13 @@ package com.reverso.controller;
 
 import com.reverso.dto.ContactCreateDto;
 import com.reverso.dto.ContactDto;
-import com.reverso.service.ContactService;
+import com.reverso.service.interfaces.ContactService;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/contacts")
@@ -26,17 +28,17 @@ public class ContactController {
     }
 
     @GetMapping("/{id}")
-    public ContactDto get(@PathVariable Long id) {
+    public ContactDto get(@PathVariable UUID id) {
         return service.getById(id);
     }
 
     @PatchMapping("/{id}/status")
-    public ContactDto updateStatus(@PathVariable Long id, @RequestParam String status) {
+    public ContactDto updateStatus(@PathVariable UUID id, @RequestParam String status) {
         return service.updateStatus(id, status);
     }
 
     @DeleteMapping("/{id}")
-    public void delete(@PathVariable Long id) {
+    public void delete(@PathVariable UUID id) {
         service.delete(id);
     }
 }
