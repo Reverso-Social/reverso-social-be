@@ -11,7 +11,7 @@ public class ReversoSocialBeApplication {
         System.out.println("\n" +
             "╔═══════════════════════════════════════════════════════╗\n" +
             "║                                                       ║\n" +
-            "║      Reverso Social Backend Running!                  ║\n" +
+            "║      Reverso Social Backend Running! 💜              ║\n" +
             "║                                                       ║\n" +
             "║  API:           http://localhost:8080/api             ║\n" +
             "║  H2 Console:    http://localhost:8080/h2-console      ║\n" +
@@ -27,6 +27,7 @@ public class ReversoSocialBeApplication {
             "║  - /api/services                                      ║\n" +
             "║  - /api/service-features                              ║\n" +
             "║  - /api/resources                                     ║\n" +
+            "║  - /api/resource-downloads                            ║\n" +
             "║  - /api/contacts                                      ║\n" +
             "║                                                       ║\n" +
             "╚═══════════════════════════════════════════════════════╝\n"
