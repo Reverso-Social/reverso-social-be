@@ -30,7 +30,7 @@ public class Contact {
 
     @Enumerated(EnumType.STRING)
     @Builder.Default
-    private ContactStatus status = ContactStatus.PENDING; // PENDING, IN_PROGRESS, RESOLVED
+    private ContactStatus status = ContactStatus.PENDING;
 
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
@@ -38,8 +38,9 @@ public class Contact {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
-    @Column(name = "user_id") 
-    private UUID userId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    private User handledByUser;
 
     @PrePersist
     public void onCreate() {

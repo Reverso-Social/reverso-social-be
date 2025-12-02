@@ -46,8 +46,9 @@ public class Service {
     @Builder.Default
     private Boolean active = true;
     
-    @Column(name = "created_by_user_id")
-    private UUID createdByUserId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "created_by_user_id")
+    private User createdByUser;
     
     @OneToMany(mappedBy = "service", cascade = CascadeType.ALL, orphanRemoval = true)
     @Builder.Default

@@ -3,6 +3,8 @@ package com.reverso.model;
 import jakarta.persistence.*;
 import lombok.*;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 @Entity
@@ -34,7 +36,23 @@ public class User {
     private String message;
 
     @Enumerated(EnumType.STRING)
-    private Role role; // 'ADMIN', 'EDITOR', 'USER'
+    private Role role;
+
+    @OneToMany(mappedBy = "createdByUser", cascade = CascadeType.ALL)
+    @Builder.Default
+    private List<Service> managedServices = new ArrayList<>();
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    @Builder.Default
+    private List<Resource> managedResources = new ArrayList<>();
+
+    @OneToMany(mappedBy = "handledByUser", cascade = CascadeType.ALL)
+    @Builder.Default
+    private List<Contact> handledContacts = new ArrayList<>();
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    @Builder.Default
+    private List<ResourceDownload> downloads = new ArrayList<>();
 
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;

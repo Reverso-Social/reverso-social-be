@@ -3,6 +3,8 @@ package com.reverso.model;
 import jakarta.persistence.*;
 import lombok.*;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 @Entity
@@ -23,7 +25,7 @@ public class Resource {
     private String description;
 
     @Enumerated(EnumType.STRING)
-    private ResourceType type; // GUIDE, REPORT, ARTICLE, VIDEO, OTHER
+    private ResourceType type;
 
     @Column(name = "file_url")
     private String fileUrl;
@@ -35,8 +37,13 @@ public class Resource {
     @Builder.Default
     private Boolean isPublic = false;
 
-    @Column(name = "user_id")
-    private UUID userId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    private User user;
+
+    @OneToMany(mappedBy = "resource", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
+    private List<ResourceDownload> downloads = new ArrayList<>();
 
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;

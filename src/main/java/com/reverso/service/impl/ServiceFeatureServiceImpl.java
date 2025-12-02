@@ -68,7 +68,6 @@ public class ServiceFeatureServiceImpl implements ServiceFeatureService {
     
     @Override
     public ServiceFeatureResponse createFeature(ServiceFeatureRequest request) {
-        // Verificar que el servicio existe
         Service service = serviceRepository.findById(request.getServiceId())
             .orElseThrow(() -> new ResourceNotFoundException("Service", "id", request.getServiceId()));
         
@@ -84,7 +83,6 @@ public class ServiceFeatureServiceImpl implements ServiceFeatureService {
         ServiceFeature feature = featureRepository.findById(id)
             .orElseThrow(() -> new ResourceNotFoundException("ServiceFeature", "id", id));
         
-        // Si se actualiza el servicio, verificar que existe
         if (request.getServiceId() != null && !request.getServiceId().equals(feature.getService().getId())) {
             Service service = serviceRepository.findById(request.getServiceId())
                 .orElseThrow(() -> new ResourceNotFoundException("Service", "id", request.getServiceId()));

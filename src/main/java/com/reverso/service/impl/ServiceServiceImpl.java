@@ -68,7 +68,6 @@ public class ServiceServiceImpl implements ServiceService {
     
     @Override
     public ServiceResponse createService(ServiceRequest request) {
-        // Verificar que la categoría existe
         ServiceCategory category = categoryRepository.findById(request.getCategoryId())
             .orElseThrow(() -> new ResourceNotFoundException("ServiceCategory", "id", request.getCategoryId()));
         
@@ -88,7 +87,6 @@ public class ServiceServiceImpl implements ServiceService {
         Service service = serviceRepository.findById(id)
             .orElseThrow(() -> new ResourceNotFoundException("Service", "id", id));
         
-        // Si se actualiza la categoría, verificar que existe
         if (request.getCategoryId() != null && !request.getCategoryId().equals(service.getCategory().getId())) {
             ServiceCategory category = categoryRepository.findById(request.getCategoryId())
                 .orElseThrow(() -> new ResourceNotFoundException("ServiceCategory", "id", request.getCategoryId()));
