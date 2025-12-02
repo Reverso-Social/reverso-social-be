@@ -1,5 +1,6 @@
 package com.reverso.model;
 
+import com.reverso.model.enums.ContactStatus;
 import jakarta.persistence.*;
 import lombok.*;
 import java.time.LocalDateTime;
@@ -54,9 +55,5 @@ public class Contact {
     @PreUpdate
     public void onUpdate() {
         this.updatedAt = LocalDateTime.now();
-    }
-    
-    public enum ContactStatus {
-        PENDING, IN_PROGRESS, RESOLVED
     }
 }

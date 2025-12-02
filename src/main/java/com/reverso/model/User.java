@@ -1,5 +1,6 @@
 package com.reverso.model;
 
+import com.reverso.model.enums.Role;
 import jakarta.persistence.*;
 import lombok.*;
 import java.time.LocalDateTime;
@@ -69,9 +70,5 @@ public class User {
     @PreUpdate
     public void onUpdate() {
         updatedAt = LocalDateTime.now();
-    }
-    
-    public enum Role {
-        USER, ADMIN, EDITOR
     }
 }

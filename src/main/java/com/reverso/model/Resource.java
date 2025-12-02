@@ -1,5 +1,6 @@
 package com.reverso.model;
 
+import com.reverso.model.enums.ResourceType;
 import jakarta.persistence.*;
 import lombok.*;
 import java.time.LocalDateTime;
@@ -63,9 +64,5 @@ public class Resource {
     @PreUpdate
     public void onUpdate() {
         this.updatedAt = LocalDateTime.now();
-    }
-    
-    public enum ResourceType {
-        GUIDE, REPORT, ARTICLE, VIDEO, OTHER
     }
 }

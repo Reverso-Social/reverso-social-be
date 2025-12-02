@@ -4,6 +4,7 @@ import com.reverso.dto.ContactCreateDto;
 import com.reverso.dto.ContactDto;
 import com.reverso.mapper.ContactMapper;
 import com.reverso.model.Contact;
+import com.reverso.model.enums.ContactStatus;
 import com.reverso.repository.ContactRepository;
 import com.reverso.service.interfaces.ContactService;
 import lombok.RequiredArgsConstructor;
@@ -45,9 +46,17 @@ public class ContactServiceImpl implements ContactService {
     public ContactDto updateStatus(UUID id, String status) {
         Contact contact = repository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Contact not found"));
-        contact.setStatus(Contact.ContactStatus.valueOf(status));
-        repository.save(contact);
-        return mapper.toDto(contact);
+        
+        // Convertir String a ContactStatus enum
+        try {
+            ContactStatus newStatus = ContactStatus.valueOf(status.toUpperCase());
+            contact.setStatus(newStatus);
+            repository.save(contact);
+            return mapper.toDto(contact);
+        } catch (IllegalArgumentException e) {
+            throw new RuntimeException("Invalid status value: " + status + 
+                ". Valid values are: PENDING, IN_PROGRESS, RESOLVED");
+        }
     }
 
     @Override
