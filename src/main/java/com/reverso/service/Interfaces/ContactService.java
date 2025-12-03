@@ -1,15 +1,20 @@
 package com.reverso.service.interfaces;
 
-import com.reverso.dto.ContactCreateDto;
-import com.reverso.dto.ContactDto;
+import com.reverso.dto.request.ContactCreateRequest;
+import com.reverso.dto.response.ContactResponse;
 
 import java.util.List;
 import java.util.UUID;
 
 public interface ContactService {
-    ContactDto create(ContactCreateDto dto);
-    List<ContactDto> getAll();
-    ContactDto getById(UUID id);
-    ContactDto updateStatus(UUID id, String status);
+    
+    ContactResponse create(ContactCreateRequest dto);
+    
+    List<ContactResponse> getAll();
+    
+    ContactResponse getById(UUID id);
+    
+    ContactResponse updateStatus(UUID id, String status);
+    
     void delete(UUID id);
 }

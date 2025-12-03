@@ -1,8 +1,8 @@
 package com.reverso.mapper;
 
+import com.reverso.dto.request.UserCreateRequest;
+import com.reverso.dto.response.UserResponse;
 import com.reverso.model.User;
-import com.reverso.dto.UserDto;
-import com.reverso.dto.UserCreateDto;
 import com.reverso.model.enums.Role;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -12,7 +12,7 @@ import org.mapstruct.Named;
 public interface UserMapper {
 
     @Mapping(target = "role", source = "role", qualifiedByName = "roleToString")
-    UserDto toDto(User user);
+    UserResponse toResponse(User user);
 
     @Mapping(target = "role", source = "role", qualifiedByName = "stringToRole")
     @Mapping(target = "id", ignore = true)
@@ -23,7 +23,7 @@ public interface UserMapper {
     @Mapping(target = "downloads", ignore = true)
     @Mapping(target = "createdAt", ignore = true)
     @Mapping(target = "updatedAt", ignore = true)
-    User toEntity(UserCreateDto dto);
+    User toEntity(UserCreateRequest dto);
 
     @Named("roleToString")
     default String roleToString(Role role) {
@@ -32,6 +32,6 @@ public interface UserMapper {
 
     @Named("stringToRole")
     default Role stringToRole(String role) {
-        return role != null ? Role.valueOf(role) : null;
+        return role != null ? Role.valueOf(role.toUpperCase()) : Role.USER;
     }
 }

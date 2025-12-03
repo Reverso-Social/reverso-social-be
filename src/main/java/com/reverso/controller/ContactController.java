@@ -1,10 +1,13 @@
 package com.reverso.controller;
 
-import com.reverso.dto.ContactCreateDto;
-import com.reverso.dto.ContactDto;
+import com.reverso.dto.request.ContactCreateRequest;
+import com.reverso.dto.response.ContactResponse;
 import com.reverso.service.interfaces.ContactService;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -18,27 +21,29 @@ public class ContactController {
     private final ContactService service;
 
     @PostMapping
-    public ContactDto create(@RequestBody ContactCreateDto dto) {
-        return service.create(dto);
+    public ResponseEntity<ContactResponse> create(@Valid @RequestBody ContactCreateRequest dto) {
+        ContactResponse contact = service.create(dto);
+        return new ResponseEntity<>(contact, HttpStatus.CREATED);
     }
 
     @GetMapping
-    public List<ContactDto> getAll() {
-        return service.getAll();
+    public ResponseEntity<List<ContactResponse>> getAll() {
+        return ResponseEntity.ok(service.getAll());
     }
 
     @GetMapping("/{id}")
-    public ContactDto get(@PathVariable UUID id) {
-        return service.getById(id);
+    public ResponseEntity<ContactResponse> get(@PathVariable UUID id) {
+        return ResponseEntity.ok(service.getById(id));
     }
 
     @PatchMapping("/{id}/status")
-    public ContactDto updateStatus(@PathVariable UUID id, @RequestParam String status) {
-        return service.updateStatus(id, status);
+    public ResponseEntity<ContactResponse> updateStatus(@PathVariable UUID id, @RequestParam String status) {
+        return ResponseEntity.ok(service.updateStatus(id, status));
     }
 
     @DeleteMapping("/{id}")
-    public void delete(@PathVariable UUID id) {
+    public ResponseEntity<Void> delete(@PathVariable UUID id) {
         service.delete(id);
+        return ResponseEntity.noContent().build();
     }
 }

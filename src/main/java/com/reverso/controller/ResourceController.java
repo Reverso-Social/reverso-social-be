@@ -1,11 +1,14 @@
 package com.reverso.controller;
 
-import com.reverso.dto.ResourceCreateDto;
-import com.reverso.dto.ResourceDto;
-import com.reverso.dto.ResourceUpdateDto;
+import com.reverso.dto.request.ResourceCreateRequest;
+import com.reverso.dto.request.ResourceUpdateRequest;
+import com.reverso.dto.response.ResourceResponse;
 import com.reverso.service.interfaces.ResourceService;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -19,37 +22,39 @@ public class ResourceController {
     private final ResourceService service;
 
     @PostMapping
-    public ResourceDto create(@RequestBody ResourceCreateDto dto) {
-        return service.create(dto);
+    public ResponseEntity<ResourceResponse> create(@Valid @RequestBody ResourceCreateRequest dto) {
+        ResourceResponse resource = service.create(dto);
+        return new ResponseEntity<>(resource, HttpStatus.CREATED);
     }
 
     @GetMapping
-    public List<ResourceDto> getAll() {
-        return service.getAll();
+    public ResponseEntity<List<ResourceResponse>> getAll() {
+        return ResponseEntity.ok(service.getAll());
     }
 
     @GetMapping("/public")
-    public List<ResourceDto> getPublic() {
-        return service.getPublic();
+    public ResponseEntity<List<ResourceResponse>> getPublic() {
+        return ResponseEntity.ok(service.getPublic());
     }
 
     @GetMapping("/type/{type}")
-    public List<ResourceDto> getByType(@PathVariable String type) {
-        return service.getByType(type.toUpperCase());
+    public ResponseEntity<List<ResourceResponse>> getByType(@PathVariable String type) {
+        return ResponseEntity.ok(service.getByType(type.toUpperCase()));
     }
 
     @GetMapping("/{id}")
-    public ResourceDto get(@PathVariable UUID id) {
-        return service.getById(id);
+    public ResponseEntity<ResourceResponse> get(@PathVariable UUID id) {
+        return ResponseEntity.ok(service.getById(id));
     }
 
     @PatchMapping("/{id}")
-    public ResourceDto update(@PathVariable UUID id, @RequestBody ResourceUpdateDto dto) {
-        return service.update(id, dto);
+    public ResponseEntity<ResourceResponse> update(@PathVariable UUID id, @Valid @RequestBody ResourceUpdateRequest dto) {
+        return ResponseEntity.ok(service.update(id, dto));
     }
 
     @DeleteMapping("/{id}")
-    public void delete(@PathVariable UUID id) {
+    public ResponseEntity<Void> delete(@PathVariable UUID id) {
         service.delete(id);
+        return ResponseEntity.noContent().build();
     }
 }

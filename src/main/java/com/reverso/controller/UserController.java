@@ -1,10 +1,13 @@
 package com.reverso.controller;
 
-import com.reverso.dto.UserCreateDto;
-import com.reverso.dto.UserDto;
+import com.reverso.dto.request.UserCreateRequest;
+import com.reverso.dto.response.UserResponse;
 import com.reverso.service.interfaces.UserService;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -18,22 +21,24 @@ public class UserController {
     private final UserService service;
 
     @PostMapping
-    public UserDto create(@RequestBody UserCreateDto dto) {
-        return service.createUser(dto);
+    public ResponseEntity<UserResponse> create(@Valid @RequestBody UserCreateRequest dto) {
+        UserResponse user = service.createUser(dto);
+        return new ResponseEntity<>(user, HttpStatus.CREATED);
     }
 
     @GetMapping
-    public List<UserDto> getAll() {
-        return service.getAll();
+    public ResponseEntity<List<UserResponse>> getAll() {
+        return ResponseEntity.ok(service.getAll());
     }
 
     @GetMapping("/{id}")
-    public UserDto get(@PathVariable UUID id) {
-        return service.getById(id);
+    public ResponseEntity<UserResponse> get(@PathVariable UUID id) {
+        return ResponseEntity.ok(service.getById(id));
     }
 
     @DeleteMapping("/{id}")
-    public void delete(@PathVariable UUID id) {
+    public ResponseEntity<Void> delete(@PathVariable UUID id) {
         service.delete(id);
+        return ResponseEntity.noContent().build();
     }
 }
