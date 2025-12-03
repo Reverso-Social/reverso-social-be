@@ -1,14 +1,19 @@
 package com.reverso.service.interfaces;
 
-import com.reverso.dto.UserCreateDto;
-import com.reverso.dto.UserDto;
+import com.reverso.dto.request.UserCreateRequest;
+import com.reverso.dto.response.UserResponse;
+import org.springframework.security.core.userdetails.UserDetailsService;
 
 import java.util.List;
 import java.util.UUID;
 
-public interface UserService {
-    UserDto createUser(UserCreateDto dto);
-    List<UserDto> getAll();
-    UserDto getById(UUID id);
+public interface UserService extends UserDetailsService {
+    
+    UserResponse createUser(UserCreateRequest dto);
+    
+    List<UserResponse> getAll();
+    
+    UserResponse getById(UUID id);
+    
     void delete(UUID id);
 }

@@ -1,71 +1,77 @@
 package com.reverso.service.impl;
 
-import com.reverso.dto.ResourceCreateDto;
-import com.reverso.dto.ResourceDto;
-import com.reverso.dto.ResourceUpdateDto;
+import com.reverso.dto.request.ResourceCreateRequest;
+import com.reverso.dto.request.ResourceUpdateRequest;
+import com.reverso.dto.response.ResourceResponse;
 import com.reverso.mapper.ResourceMapper;
 import com.reverso.model.Resource;
 import com.reverso.repository.ResourceRepository;
 import com.reverso.service.interfaces.ResourceService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class ResourceServiceImpl implements ResourceService {
 
     private final ResourceRepository repository;
     private final ResourceMapper mapper;
 
     @Override
-    public ResourceDto create(ResourceCreateDto dto) {
+    public ResourceResponse create(ResourceCreateRequest dto) {
         Resource resource = mapper.toEntity(dto);
         repository.save(resource);
-        return mapper.toDto(resource);
+        return mapper.toResponse(resource);
     }
 
     @Override
-    public List<ResourceDto> getAll() {
+    @Transactional(readOnly = true)
+    public List<ResourceResponse> getAll() {
         return repository.findAll().stream()
-                .map(mapper::toDto)
+                .map(mapper::toResponse)
                 .toList();
     }
 
     @Override
-    public List<ResourceDto> getPublic() {
+    @Transactional(readOnly = true)
+    public List<ResourceResponse> getPublic() {
         return repository.findByIsPublicTrue()
                 .stream()
-                .map(mapper::toDto)
+                .map(mapper::toResponse)
                 .toList();
     }
 
     @Override
-    public List<ResourceDto> getByType(String type) {
+    @Transactional(readOnly = true)
+    public List<ResourceResponse> getByType(String type) {
         return repository.findByType(type)
                 .stream()
-                .map(mapper::toDto)
+                .map(mapper::toResponse)
                 .toList();
     }
 
     @Override
-    public ResourceDto getById(UUID id) {
+    @Transactional(readOnly = true)
+    public ResourceResponse getById(UUID id) {
         Resource resource = repository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Resource not found"));
-        return mapper.toDto(resource);
+                .orElseThrow(() -> new RuntimeException("Recurso no encontrado"));
+        return mapper.toResponse(resource);
     }
 
     @Override
-    public ResourceDto update(UUID id, ResourceUpdateDto dto) {
+    public ResourceResponse update(UUID id, ResourceUpdateRequest dto) {
         Resource resource = repository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Resource not found"));
+                .orElseThrow(() -> new RuntimeException("Recurso no encontrado"));
 
-        mapper.updateEntityFromDto(dto, resource);
+        mapper.updateFromRequest(dto, resource);
         repository.save(resource);
 
-        return mapper.toDto(resource);
+        return mapper.toResponse(resource);
     }
 
     @Override
