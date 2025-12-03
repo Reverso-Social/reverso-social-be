@@ -19,7 +19,7 @@ public class ReversoSocialBeApplication {
             "║  Database Info (H2):                                  ║\n" +
             "║  JDBC URL:     jdbc:h2:mem:reversodb                  ║\n" +
             "║  Username:     sa                                     ║\n" +
-            "║  Password:     (empty)                                ║\n" +
+            "║  Password:                                            ║\n" +
             "║                                                       ║\n" +
             "║  Endpoints disponibles:                               ║\n" +
             "║  - /api/users                                         ║\n" +
