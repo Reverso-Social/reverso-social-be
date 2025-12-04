@@ -83,6 +83,12 @@ public class SecurityConfig {
 
                 .requestMatchers("/api/users/**").hasRole("ADMIN")
                 
+                    // BLOG POSTS
+                .requestMatchers(HttpMethod.GET, "/api/blog-posts/**").permitAll()
+                .requestMatchers(HttpMethod.POST, "/api/blog-posts/**").hasAnyRole("ADMIN", "EDITOR")
+                .requestMatchers(HttpMethod.PUT, "/api/blog-posts/**").hasAnyRole("ADMIN", "EDITOR")
+                .requestMatchers(HttpMethod.DELETE, "/api/blog-posts/**").hasRole("ADMIN")
+
 
                 .anyRequest().authenticated()
             )

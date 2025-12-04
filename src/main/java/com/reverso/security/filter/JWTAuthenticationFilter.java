@@ -16,7 +16,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+//import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter; (Lo usaremos??) 
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
@@ -37,10 +37,9 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
     
     @Override
     protected void doFilterInternal(HttpServletRequest request,
-                                   HttpServletResponse response,
-                                   FilterChain filterChain) throws ServletException, IOException {
+        HttpServletResponse response,
+        FilterChain filterChain) throws ServletException, IOException {
         
-        // Solo procesar si es la URL de login y método POST
         if (!request.getRequestURI().equals(filterProcessesUrl) || 
             !request.getMethod().equals("POST")) {
             filterChain.doFilter(request, response);
@@ -48,20 +47,16 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
         }
         
         try {
-            // Leer las credenciales del request
             LoginRequest credentials = new ObjectMapper()
                 .readValue(request.getInputStream(), LoginRequest.class);
             
-            // Crear token de autenticación
             Authentication authentication = new UsernamePasswordAuthenticationToken(
                 credentials.getEmail(),
                 credentials.getPassword()
             );
             
-            // Autenticar
             Authentication authResult = authenticationManager.authenticate(authentication);
             
-            // Si llega aquí, la autenticación fue exitosa
             successfulAuthentication(request, response, authResult);
             
         } catch (AuthenticationException e) {
@@ -70,8 +65,8 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
     }
     
     protected void successfulAuthentication(HttpServletRequest request,
-                                          HttpServletResponse response,
-                                          Authentication authResult) throws IOException {
+        HttpServletResponse response,
+        Authentication authResult) throws IOException {
         
         UserDetailsImpl userDetails = (UserDetailsImpl) authResult.getPrincipal();
         
