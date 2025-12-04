@@ -7,6 +7,7 @@ import com.reverso.model.Contact;
 import com.reverso.model.enums.ContactStatus;
 import com.reverso.repository.ContactRepository;
 import com.reverso.service.interfaces.ContactService;
+import com.reverso.service.interfaces.EmailService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,12 +22,19 @@ public class ContactServiceImpl implements ContactService {
 
     private final ContactRepository repository;
     private final ContactMapper mapper;
+    private final EmailService emailService;
 
     @Override
     public ContactResponse create(ContactCreateRequest dto) {
-        Contact contact = mapper.toEntity(dto);
-        repository.save(contact);
-        return mapper.toResponse(contact);
+
+        Contact entity = mapper.toEntity(dto);
+        Contact saved = repository.save(entity);
+
+        // ---- Tus emails originales ----
+        emailService.sendEmailToAdmin(dto);
+        emailService.sendConfirmationToUser(dto);
+
+        return mapper.toResponse(saved);
     }
 
     @Override
@@ -48,18 +56,21 @@ public class ContactServiceImpl implements ContactService {
 
     @Override
     public ContactResponse updateStatus(UUID id, String status) {
+
         Contact contact = repository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Contacto no encontrado"));
-        
+
+        ContactStatus newStatus;
         try {
-            ContactStatus newStatus = ContactStatus.valueOf(status.toUpperCase());
-            contact.setStatus(newStatus);
-            repository.save(contact);
-            return mapper.toResponse(contact);
+            newStatus = ContactStatus.valueOf(status.toUpperCase());
         } catch (IllegalArgumentException e) {
-            throw new RuntimeException("Valor de estado inválido: " + status + 
-                ". Valores válidos son: PENDING, IN_PROGRESS, RESOLVED");
+            throw new RuntimeException("Estado inválido: " + status);
         }
+
+        contact.setStatus(newStatus);
+        Contact saved = repository.save(contact);
+
+        return mapper.toResponse(saved);
     }
 
     @Override
