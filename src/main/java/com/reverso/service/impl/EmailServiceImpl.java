@@ -17,8 +17,8 @@ public class EmailServiceImpl implements EmailService {
     public void sendEmailToAdmin(ContactCreateRequest dto) {
 
         SimpleMailMessage mail = new SimpleMailMessage();
-        mail.setFrom("a9003728@outlook.es");
-        mail.setTo("a9003728@outlook.es");
+        mail.setFrom(System.getenv("MAIL_USERNAME"));
+        mail.setTo(System.getenv("ADMIN_EMAIL"));
         mail.setSubject("Nuevo mensaje desde Reverso Social");
 
         mail.setText(

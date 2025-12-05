@@ -76,7 +76,7 @@ public class SecurityConfig {
                 
 
                 .requestMatchers(HttpMethod.POST, "/api/contacts").permitAll()
-                .requestMatchers(HttpMethod.GET, "/api/contacts/**").hasAnyRole("ADMIN", "EDITOR")
+                .requestMatchers(HttpMethod.GET, "/api/contacts").hasRole("ADMIN")
                 .requestMatchers(HttpMethod.PATCH, "/api/contacts/**").hasAnyRole("ADMIN", "EDITOR")
                 .requestMatchers(HttpMethod.DELETE, "/api/contacts/**").hasRole("ADMIN")
 
