@@ -3,6 +3,7 @@ package com.reverso.controller;
 import com.reverso.dto.request.ContactCreateRequest;
 import com.reverso.dto.response.ContactResponse;
 import com.reverso.service.interfaces.ContactService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -19,7 +20,7 @@ public class ContactController {
 
     // CREATE
     @PostMapping
-    public ResponseEntity<ContactResponse> create(@RequestBody ContactCreateRequest dto) {
+    public ResponseEntity<ContactResponse> create(@Valid @RequestBody ContactCreateRequest dto) {
         return ResponseEntity.ok(contactService.create(dto));
     }
 

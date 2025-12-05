@@ -25,5 +25,6 @@ public interface BlogPostMapper {
     @Mapping(target = "publishedAt", ignore = true)
     void updateEntityFromDto(BlogPostUpdateRequest request, @MappingTarget BlogPost entity);
 
+    @Mapping(target = "coverImageUrl", source = "coverImagePath")
     BlogPostResponse toResponse(BlogPost entity);
 }

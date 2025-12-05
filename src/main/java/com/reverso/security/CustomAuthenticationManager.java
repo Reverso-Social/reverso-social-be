@@ -11,46 +11,46 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class CustomAuthenticationManager implements AuthenticationManager {
-    
+
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
-    
-    public CustomAuthenticationManager(UserRepository userRepository, 
-                                      PasswordEncoder passwordEncoder) {
+
+    public CustomAuthenticationManager(UserRepository userRepository,
+                PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
     }
-    
+
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
         String email = authentication.getName();
         String password = authentication.getCredentials().toString();
-        
-        System.out.println("🔍 Buscando usuario con email: " + email);
-        
+
+        System.out.println("Buscando usuario con email: " + email);
+
         var user = userRepository.findByEmail(email)
             .orElseThrow(() -> {
                 System.err.println("Usuario no encontrado: " + email);
-                return new BadCredentialsException("Correo electrónico o contraseña inválidos");
+                return new BadCredentialsException("Correo electronico o contrasena invalidos");
             });
-        
+
         System.out.println("Usuario encontrado: " + user.getEmail());
         System.out.println("Hash en BD: " + user.getPassword().substring(0, 20) + "...");
-        
+
         boolean passwordMatches = passwordEncoder.matches(password, user.getPassword());
-        System.out.println(" ¿Contraseña coincide?: " + passwordMatches);
-        
+        System.out.println("Contrasena coincide?: " + passwordMatches);
+
         if (!passwordMatches) {
-            System.err.println("Contraseña incorrecta para: " + email);
-            throw new BadCredentialsException("Correo electrónico o contraseña inválidos");
+            System.err.println("Contrasena incorrecta para: " + email);
+            throw new BadCredentialsException("Correo electronico o contrasena invalidos");
         }
-        
+
         UserDetailsImpl userDetails = new UserDetailsImpl(user);
-        
-        System.out.println("Autenticación exitosa para: " + email + " con rol: " + user.getRole());
-        
+
+        System.out.println("Autenticacion exitosa para: " + email + " con rol: " + user.getRole());
+
         return new UsernamePasswordAuthenticationToken(
-            userDetails, 
+            userDetails,
             password,
             userDetails.getAuthorities()
         );

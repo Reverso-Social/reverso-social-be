@@ -11,6 +11,7 @@ import com.reverso.repository.BlogPostRepository;
 import com.reverso.service.interfaces.BlogPostService;
 import com.reverso.service.interfaces.FileStorageService;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -23,16 +24,17 @@ public class BlogPostServiceImpl implements BlogPostService {
 
     private final BlogPostRepository blogPostRepository;
     private final BlogPostMapper blogPostMapper;
-    private final FileStorageService fileStorageService;
+
+    // Inyección opcional hasta que exista la implementación real
+    @Autowired(required = false)
+    private FileStorageService fileStorageService;
 
     public BlogPostServiceImpl(
             BlogPostRepository blogPostRepository,
-            BlogPostMapper blogPostMapper,
-            FileStorageService fileStorageService
+            BlogPostMapper blogPostMapper
     ) {
         this.blogPostRepository = blogPostRepository;
         this.blogPostMapper = blogPostMapper;
-        this.fileStorageService = fileStorageService;
     }
 
     @Override
@@ -42,7 +44,7 @@ public class BlogPostServiceImpl implements BlogPostService {
 
         entity.setSlug(generateSlug(request.getTitle()));
 
-        if (image != null && !image.isEmpty()) {
+        if (image != null && !image.isEmpty() && fileStorageService != null) {
             String path = fileStorageService.saveBlogImage(image);
             entity.setCoverImagePath(path);
         }
@@ -63,7 +65,7 @@ public class BlogPostServiceImpl implements BlogPostService {
             entity.setSlug(generateSlug(request.getTitle()));
         }
 
-        if (image != null && !image.isEmpty()) {
+        if (image != null && !image.isEmpty() && fileStorageService != null) {
             String path = fileStorageService.saveBlogImage(image);
             entity.setCoverImagePath(path);
         }
@@ -104,9 +106,11 @@ public class BlogPostServiceImpl implements BlogPostService {
 
     @Override
     public List<BlogPostResponse> findLatestPublished(int limit) {
-        List<BlogPost> posts = blogPostRepository.findTop5ByStatusOrderByPublishedAtDesc(
-                BlogPostStatus.PUBLISHED
-        );
+        List<BlogPost> posts =
+                blogPostRepository.findTop5ByStatusOrderByPublishedAtDesc(
+                        BlogPostStatus.PUBLISHED
+                );
+
         return posts.stream()
                 .map(blogPostMapper::toResponse)
                 .limit(limit)
@@ -122,7 +126,10 @@ public class BlogPostServiceImpl implements BlogPostService {
     }
 
     private String generateSlug(String title) {
-        String normalized = Normalizer.normalize(title.toLowerCase(), Normalizer.Form.NFD)
+        String normalized = Normalizer.normalize(
+                        title.toLowerCase(),
+                        Normalizer.Form.NFD
+                )
                 .replaceAll("\\p{InCombiningDiacriticalMarks}+", "");
 
         return normalized
