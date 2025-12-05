@@ -12,8 +12,8 @@ import org.mapstruct.Named;
 public interface ContactMapper {
 
     @Mapping(target = "status", source = "status", qualifiedByName = "statusToString")
-    @Mapping(target = "userId", source = "handledByUser.id")
-    @Mapping(target = "userName", source = "handledByUser.fullName")
+    @Mapping(target = "userId", source = "contact", qualifiedByName = "getUserId")
+    @Mapping(target = "userName", source = "contact", qualifiedByName = "getUserName")
     ContactResponse toResponse(Contact contact);
 
     @Mapping(target = "id", ignore = true)
@@ -26,5 +26,15 @@ public interface ContactMapper {
     @Named("statusToString")
     default String statusToString(ContactStatus status) {
         return status != null ? status.name() : null;
+    }
+
+    @Named("getUserId")
+    default java.util.UUID getUserId(Contact contact) {
+        return contact.getHandledByUser() != null ? contact.getHandledByUser().getId() : null;
+    }
+
+    @Named("getUserName")
+    default String getUserName(Contact contact) {
+        return contact.getHandledByUser() != null ? contact.getHandledByUser().getFullName() : null;
     }
 }

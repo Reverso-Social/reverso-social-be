@@ -26,7 +26,7 @@ public class CustomAuthenticationManager implements AuthenticationManager {
         String email = authentication.getName();
         String password = authentication.getCredentials().toString();
         
-        System.out.println("🔍 Buscando usuario con email: " + email);
+        System.out.println("Buscando usuario con email: " + email);
         
         var user = userRepository.findByEmail(email)
             .orElseThrow(() -> {

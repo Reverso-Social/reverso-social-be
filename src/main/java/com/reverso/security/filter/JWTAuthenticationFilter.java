@@ -39,7 +39,7 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
                                    HttpServletResponse response,
                                    FilterChain filterChain) throws ServletException, IOException {
         
-        // Solo procesar si es la URL de login y método POST
+
         if (!request.getRequestURI().equals(filterProcessesUrl) || 
             !request.getMethod().equals("POST")) {
             filterChain.doFilter(request, response);
@@ -47,24 +47,20 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
         }
         
         try {
-            // Leer las credenciales del request
             LoginRequest credentials = new ObjectMapper()
                 .readValue(request.getInputStream(), LoginRequest.class);
             
-            System.out.println("🔐 Intento de login con email: " + credentials.getEmail());
+            System.out.println("Intento de login con email: " + credentials.getEmail());
             
-            // Crear token de autenticación
             Authentication authentication = new UsernamePasswordAuthenticationToken(
                 credentials.getEmail(),
                 credentials.getPassword()
             );
             
-            // Autenticar
             Authentication authResult = authenticationManager.authenticate(authentication);
             
-            System.out.println("✅ Autenticación exitosa");
+            System.out.println("Autenticación exitosa");
             
-            // Si llega aquí, la autenticación fue exitosa
             successfulAuthentication(request, response, authResult);
             
         } catch (AuthenticationException e) {

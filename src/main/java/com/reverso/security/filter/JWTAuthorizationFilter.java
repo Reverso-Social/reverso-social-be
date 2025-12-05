@@ -25,7 +25,12 @@ public class JWTAuthorizationFilter extends OncePerRequestFilter {
                                    FilterChain filterChain)
             throws ServletException, IOException {
         
-        // ⭐ IMPORTANTE: Ignorar endpoints públicos
+
+        if ("OPTIONS".equalsIgnoreCase(request.getMethod())) {
+            filterChain.doFilter(request, response);
+            return;
+        }
+        
         String path = request.getRequestURI();
         if (shouldNotFilter(path)) {
             filterChain.doFilter(request, response);
@@ -34,7 +39,6 @@ public class JWTAuthorizationFilter extends OncePerRequestFilter {
         
         String header = request.getHeader(SecurityConstants.HEADER_STRING);
         
-        // Si no hay header, continuar (los permisos se validan en SecurityConfig)
         if (header == null || !header.startsWith(SecurityConstants.TOKEN_PREFIX)) {
             filterChain.doFilter(request, response);
             return;
