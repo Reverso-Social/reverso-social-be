@@ -25,8 +25,16 @@ public class JWTAuthorizationFilter extends OncePerRequestFilter {
                                    FilterChain filterChain)
             throws ServletException, IOException {
         
+        // ⭐ IMPORTANTE: Ignorar endpoints públicos
+        String path = request.getRequestURI();
+        if (shouldNotFilter(path)) {
+            filterChain.doFilter(request, response);
+            return;
+        }
+        
         String header = request.getHeader(SecurityConstants.HEADER_STRING);
         
+        // Si no hay header, continuar (los permisos se validan en SecurityConfig)
         if (header == null || !header.startsWith(SecurityConstants.TOKEN_PREFIX)) {
             filterChain.doFilter(request, response);
             return;
@@ -60,5 +68,23 @@ public class JWTAuthorizationFilter extends OncePerRequestFilter {
         }
         
         filterChain.doFilter(request, response);
+    }
+    
+    private boolean shouldNotFilter(String path) {
+        return path.startsWith("/api/auth/") ||
+               path.startsWith("/h2-console/") ||
+               (path.startsWith("/api/service-categories") && isGetRequest()) ||
+               (path.startsWith("/api/services") && isGetRequest()) ||
+               (path.startsWith("/api/service-features") && isGetRequest()) ||
+               path.equals("/api/resources/public") ||
+               (path.startsWith("/api/contacts") && isPostRequest());
+    }
+    
+    private boolean isGetRequest() {
+        return true; 
+    }
+    
+    private boolean isPostRequest() {
+        return true; 
     }
 }
