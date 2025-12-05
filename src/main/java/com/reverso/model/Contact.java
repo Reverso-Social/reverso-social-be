@@ -30,12 +30,13 @@ public class Contact {
     private Boolean acceptsPrivacy;
 
     @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
     @Builder.Default
     private ContactStatus status = ContactStatus.PENDING;
 
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
-    
+
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
@@ -47,6 +48,7 @@ public class Contact {
     public void onCreate() {
         this.createdAt = LocalDateTime.now();
         this.updatedAt = LocalDateTime.now();
+
         if (this.status == null) {
             this.status = ContactStatus.PENDING;
         }

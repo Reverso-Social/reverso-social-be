@@ -3,10 +3,7 @@ package com.reverso.controller;
 import com.reverso.dto.request.ContactCreateRequest;
 import com.reverso.dto.response.ContactResponse;
 import com.reverso.service.interfaces.ContactService;
-
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,32 +15,39 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class ContactController {
 
-    private final ContactService service;
+    private final ContactService contactService;
 
+    // CREATE
     @PostMapping
-    public ResponseEntity<ContactResponse> create(@Valid @RequestBody ContactCreateRequest dto) {
-        ContactResponse contact = service.create(dto);
-        return new ResponseEntity<>(contact, HttpStatus.CREATED);
+    public ResponseEntity<ContactResponse> create(@RequestBody ContactCreateRequest dto) {
+        return ResponseEntity.ok(contactService.create(dto));
     }
 
+    // GET ALL
     @GetMapping
     public ResponseEntity<List<ContactResponse>> getAll() {
-        return ResponseEntity.ok(service.getAll());
+        return ResponseEntity.ok(contactService.getAll());
     }
 
+    // GET BY ID
     @GetMapping("/{id}")
-    public ResponseEntity<ContactResponse> get(@PathVariable UUID id) {
-        return ResponseEntity.ok(service.getById(id));
+    public ResponseEntity<ContactResponse> getById(@PathVariable UUID id) {
+        return ResponseEntity.ok(contactService.getById(id));
     }
 
+    // UPDATE STATUS
     @PatchMapping("/{id}/status")
-    public ResponseEntity<ContactResponse> updateStatus(@PathVariable UUID id, @RequestParam String status) {
-        return ResponseEntity.ok(service.updateStatus(id, status));
+    public ResponseEntity<ContactResponse> updateStatus(
+            @PathVariable UUID id,
+            @RequestParam String status
+    ) {
+        return ResponseEntity.ok(contactService.updateStatus(id, status));
     }
 
+    // DELETE
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable UUID id) {
-        service.delete(id);
+        contactService.delete(id);
         return ResponseEntity.noContent().build();
     }
 }

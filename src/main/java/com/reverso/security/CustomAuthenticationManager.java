@@ -26,14 +26,28 @@ public class CustomAuthenticationManager implements AuthenticationManager {
         String email = authentication.getName();
         String password = authentication.getCredentials().toString();
         
-        var user = userRepository.findByEmail(email)
-            .orElseThrow(() -> new BadCredentialsException("Correo electrónico o contraseña inválidos"));
+        System.out.println("🔍 Buscando usuario con email: " + email);
         
-        if (!passwordEncoder.matches(password, user.getPassword())) {
+        var user = userRepository.findByEmail(email)
+            .orElseThrow(() -> {
+                System.err.println("Usuario no encontrado: " + email);
+                return new BadCredentialsException("Correo electrónico o contraseña inválidos");
+            });
+        
+        System.out.println("Usuario encontrado: " + user.getEmail());
+        System.out.println("Hash en BD: " + user.getPassword().substring(0, 20) + "...");
+        
+        boolean passwordMatches = passwordEncoder.matches(password, user.getPassword());
+        System.out.println(" ¿Contraseña coincide?: " + passwordMatches);
+        
+        if (!passwordMatches) {
+            System.err.println("Contraseña incorrecta para: " + email);
             throw new BadCredentialsException("Correo electrónico o contraseña inválidos");
         }
         
         UserDetailsImpl userDetails = new UserDetailsImpl(user);
+        
+        System.out.println("Autenticación exitosa para: " + email + " con rol: " + user.getRole());
         
         return new UsernamePasswordAuthenticationToken(
             userDetails, 

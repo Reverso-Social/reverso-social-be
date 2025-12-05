@@ -50,6 +50,9 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
             LoginRequest credentials = new ObjectMapper()
                 .readValue(request.getInputStream(), LoginRequest.class);
             
+            System.out.println("🔐 Intento de login con email: " + credentials.getEmail());
+            
+            // Crear token de autenticación
             Authentication authentication = new UsernamePasswordAuthenticationToken(
                 credentials.getEmail(),
                 credentials.getPassword()
@@ -57,10 +60,19 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
             
             Authentication authResult = authenticationManager.authenticate(authentication);
             
+            System.out.println("✅ Autenticación exitosa");
+            
+            // Si llega aquí, la autenticación fue exitosa
             successfulAuthentication(request, response, authResult);
             
         } catch (AuthenticationException e) {
+            System.err.println("Error de autenticación: " + e.getMessage());
             unsuccessfulAuthentication(request, response, e);
+        } catch (Exception e) {
+            System.err.println("Error inesperado: " + e.getMessage());
+            e.printStackTrace();
+            unsuccessfulAuthentication(request, response, 
+                new AuthenticationException("Error al procesar login") {});
         }
     }
     
@@ -89,8 +101,11 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
             .fullName(userDetails.getUser().getFullName())
             .build();
         
+        System.out.println("Token generado para: " + authResult.getName());
+        
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
+        response.setStatus(HttpServletResponse.SC_OK);
         response.addHeader(SecurityConstants.HEADER_STRING, SecurityConstants.TOKEN_PREFIX + token);
         response.getWriter().write(new ObjectMapper().writeValueAsString(jwtResponse));
         response.getWriter().flush();
@@ -104,7 +119,7 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
         response.getWriter().write(
-            "{\"error\": \"" + failed.getMessage() + "\"}"
+            "{\"error\": \"Correo electrónico o contraseña inválidos\"}"
         );
         response.getWriter().flush();
     }

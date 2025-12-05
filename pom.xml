@@ -41,25 +41,18 @@
             <artifactId>spring-boot-starter-validation</artifactId>
         </dependency>
 
-        <!-- H2 Database (Development) -->
-        <dependency>
-            <groupId>com.h2database</groupId>
-            <artifactId>h2</artifactId>
-            <scope>runtime</scope>
-        </dependency>
-
-                <!-- JWT - Auth0 -->
-        <dependency>
-            <groupId>com.auth0</groupId>
-            <artifactId>java-jwt</artifactId>
-            <version>4.4.0</version>
-        </dependency>
-
-        <!-- PostgreSQL (Production) -->
+        <!-- PostgreSQL -->
         <dependency>
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
             <scope>runtime</scope>
+        </dependency>
+
+        <!-- JWT Auth0 (del dev) -->
+        <dependency>
+            <groupId>com.auth0</groupId>
+            <artifactId>java-jwt</artifactId>
+            <version>4.4.0</version>
         </dependency>
 
         <!-- Lombok -->
@@ -84,11 +77,17 @@
             <scope>provided</scope>
         </dependency>
 
-        <!-- .env support -->
+        <!-- .env -->
         <dependency>
             <groupId>me.paulschwarz</groupId>
             <artifactId>spring-dotenv</artifactId>
             <version>3.0.0</version>
+        </dependency>
+
+        <!-- Email (tu dependencia) -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-mail</artifactId>
         </dependency>
 
         <!-- Test -->
@@ -97,8 +96,8 @@
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
         </dependency>
-    </dependencies>
 
+    </dependencies>
 
     <build>
         <plugins>
@@ -111,8 +110,6 @@
                 </configuration>
             </plugin>
 
-
-            <!-- COMPILER: aquÃ­ se genera MapStruct -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
@@ -121,15 +118,13 @@
                     <source>21</source>
                     <target>21</target>
                     <annotationProcessorPaths>
-                        
-                        <!-- Lombok as annotation processor -->
+
                         <path>
                             <groupId>org.projectlombok</groupId>
                             <artifactId>lombok</artifactId>
                             <version>1.18.34</version>
                         </path>
 
-                        <!-- MapStruct annotation processor -->
                         <path>
                             <groupId>org.mapstruct</groupId>
                             <artifactId>mapstruct-processor</artifactId>
@@ -140,7 +135,6 @@
                 </configuration>
             </plugin>
 
-            <!-- Spring Boot -->
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
