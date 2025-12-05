@@ -7,6 +7,7 @@ import com.reverso.model.Contact;
 import com.reverso.model.enums.ContactStatus;
 import com.reverso.repository.ContactRepository;
 import com.reverso.service.interfaces.ContactService;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

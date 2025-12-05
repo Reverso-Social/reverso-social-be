@@ -7,6 +7,7 @@ import com.reverso.model.User;
 import com.reverso.repository.UserRepository;
 import com.reverso.security.UserDetailsImpl;
 import com.reverso.service.interfaces.UserService;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
