@@ -18,25 +18,25 @@ public class ContactController {
 
     private final ContactService contactService;
 
-    // CREATE
+
     @PostMapping
     public ResponseEntity<ContactResponse> create(@Valid @RequestBody ContactCreateRequest dto) {
         return ResponseEntity.ok(contactService.create(dto));
     }
 
-    // GET ALL
+
     @GetMapping
     public ResponseEntity<List<ContactResponse>> getAll() {
         return ResponseEntity.ok(contactService.getAll());
     }
 
-    // GET BY ID
+
     @GetMapping("/{id}")
     public ResponseEntity<ContactResponse> getById(@PathVariable UUID id) {
         return ResponseEntity.ok(contactService.getById(id));
     }
 
-    // UPDATE STATUS
+
     @PatchMapping("/{id}/status")
     public ResponseEntity<ContactResponse> updateStatus(
             @PathVariable UUID id,
@@ -45,7 +45,7 @@ public class ContactController {
         return ResponseEntity.ok(contactService.updateStatus(id, status));
     }
 
-    // DELETE
+
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable UUID id) {
         contactService.delete(id);

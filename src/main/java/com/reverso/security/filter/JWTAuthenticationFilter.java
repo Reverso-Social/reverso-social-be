@@ -41,37 +41,39 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
 
         if (!request.getRequestURI().equals(filterProcessesUrl) ||
             !request.getMethod().equalsIgnoreCase("POST")) {
+
             filterChain.doFilter(request, response);
             return;
         }
 
         try {
             LoginRequest credentials = new ObjectMapper()
-                .readValue(request.getInputStream(), LoginRequest.class);
+                    .readValue(request.getInputStream(), LoginRequest.class);
 
             System.out.println("Intento de login con email: " + credentials.getEmail());
 
             Authentication authentication = new UsernamePasswordAuthenticationToken(
-                credentials.getEmail(),
-                credentials.getPassword()
+                    credentials.getEmail(),
+                    credentials.getPassword()
             );
 
             Authentication authResult = authenticationManager.authenticate(authentication);
 
-            System.out.println("Autenticacion exitosa");
+            System.out.println("Autenticación exitosa");
 
             successfulAuthentication(request, response, authResult);
 
         } catch (AuthenticationException e) {
-            System.err.println("Error de autenticacion: " + e.getMessage());
+            System.err.println("Error de autenticación: " + e.getMessage());
             unsuccessfulAuthentication(request, response, e);
+
         } catch (Exception e) {
             System.err.println("Error inesperado: " + e.getMessage());
             e.printStackTrace();
             unsuccessfulAuthentication(
-                request,
-                response,
-                new AuthenticationException("Error al procesar login") {}
+                    request,
+                    response,
+                    new AuthenticationException("Error al procesar login") {}
             );
         }
     }
@@ -83,23 +85,23 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
         UserDetailsImpl userDetails = (UserDetailsImpl) authResult.getPrincipal();
 
         String role = authResult.getAuthorities().stream()
-            .findFirst()
-            .map(GrantedAuthority::getAuthority)
-            .orElse("ROLE_USER")
-            .replace("ROLE_", "");
+                .findFirst()
+                .map(GrantedAuthority::getAuthority)
+                .orElse("ROLE_USER")
+                .replace("ROLE_", "");
 
         String token = JWT.create()
-            .withSubject(authResult.getName())
-            .withClaim("role", role)
-            .withExpiresAt(new Date(System.currentTimeMillis() + SecurityConstants.EXPIRATION_TIME))
-            .sign(Algorithm.HMAC512(SecurityConstants.SECRET_KEY));
+                .withSubject(authResult.getName())
+                .withClaim("role", role)
+                .withExpiresAt(new Date(System.currentTimeMillis() + SecurityConstants.EXPIRATION_TIME))
+                .sign(Algorithm.HMAC512(SecurityConstants.SECRET_KEY));
 
         JwtResponse jwtResponse = JwtResponse.builder()
-            .token(token)
-            .email(authResult.getName())
-            .role(role)
-            .fullName(userDetails.getUser().getFullName())
-            .build();
+                .token(token)
+                .email(authResult.getName())
+                .role(role)
+                .fullName(userDetails.getUser().getFullName())
+                .build();
 
         System.out.println("Token generado para: " + authResult.getName());
 
@@ -112,14 +114,14 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
     }
 
     protected void unsuccessfulAuthentication(HttpServletRequest request,
-                HttpServletResponse response,
-                AuthenticationException failed) throws IOException {
+                                              HttpServletResponse response,
+                                              AuthenticationException failed) throws IOException {
 
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
         response.getWriter().write(
-            "{\"error\": \"Correo electronico o contrasena invalidos\"}"
+                "{\"error\": \"Correo electrónico o contraseña inválidos\"}"
         );
         response.getWriter().flush();
     }

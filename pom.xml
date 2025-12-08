@@ -84,7 +84,7 @@
             <version>3.0.0</version>
         </dependency>
 
-        <!-- Email (tu dependencia) -->
+        <!-- Email -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-mail</artifactId>

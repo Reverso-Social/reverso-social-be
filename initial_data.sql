@@ -4,32 +4,18 @@
 -- ======================
 -- USUARIOS
 -- ======================
--- Contraseña para todos: password123
--- Hash BCrypt de "password123": $2a$10$xqTjXBvGQZH5.xHqN6rZ2eTjPTXLPZdUJU.pLwW2K.gKxK5M7kE5e
-
--- CUENTA ADMIN COMPARTIDA (Para María, Ana y Laura)
-INSERT INTO users (id, full_name, email, password, phone, company_name, role, created_at, updated_at) VALUES
-('a1b2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c5d', 
- 'Equipo Reverso Social', 
- 'admin@reversosocial.com', 
- '$2a$10$xqTjXBvGQZH5.xHqN6rZ2eTjPTXLPZdUJU.pLwW2K.gKxK5M7kE5e', 
- '+34 900 000 000', 
- 'Reverso Social', 
- 'ADMIN', 
- NOW(), 
- NOW());
-
--- CUENTA EDITOR DE EJEMPLO (Para colaboradoras externas/becarias)
-INSERT INTO users (id, full_name, email, password, phone, company_name, role, created_at, updated_at) VALUES
-('b2c3d4e5-f6a7-4b8c-9d0e-1f2a3b4c5d6e', 
- 'Colaboradora Externa', 
- 'editor@reversosocial.com', 
- '$2a$10$xqTjXBvGQZH5.xHqN6rZ2eTjPTXLPZdUJU.pLwW2K.gKxK5M7kE5e', 
- '+34 900 000 001', 
- 'Reverso Social', 
- 'EDITOR', 
- NOW(), 
- NOW());
+-- Los usuarios ADMIN y EDITOR se crean automáticamente al iniciar la aplicación
+-- mediante el DataLoader (src/main/java/com/reverso/config/DataLoader.java)
+-- 
+-- CREDENCIALES DE ACCESO:
+-- ADMIN:  admin@reversosocial.com / password123
+-- EDITOR: editor@reversosocial.com / password123
+--
+-- Las contraseñas se hashean automáticamente con BCrypt, por lo que siempre
+-- funcionarán correctamente con el sistema de autenticación JWT.
+--
+-- Si necesitas crear más usuarios, usa el endpoint POST /api/users (requiere rol ADMIN)
+-- o usa el DataLoader para agregar usuarios adicionales por defecto.
 
 -- ======================
 -- CATEGORÍAS DE SERVICIOS

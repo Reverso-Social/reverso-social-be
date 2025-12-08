@@ -25,6 +25,12 @@ public class JWTAuthorizationFilter extends OncePerRequestFilter {
                                     FilterChain filterChain)
             throws ServletException, IOException {
 
+        // 👇 Permitir pre-flight CORS requests
+        if ("OPTIONS".equalsIgnoreCase(request.getMethod())) {
+            filterChain.doFilter(request, response);
+            return;
+        }
+
         String path = request.getRequestURI();
         String method = request.getMethod();
 
@@ -44,16 +50,16 @@ public class JWTAuthorizationFilter extends OncePerRequestFilter {
             String token = header.replace(SecurityConstants.TOKEN_PREFIX, "");
 
             DecodedJWT decodedJWT = JWT.require(Algorithm.HMAC512(SecurityConstants.SECRET_KEY))
-                .build()
-                .verify(token);
+                    .build()
+                    .verify(token);
 
             String email = decodedJWT.getSubject();
             String role = decodedJWT.getClaim("role").asString();
 
             Authentication authentication = new UsernamePasswordAuthenticationToken(
-                email,
-                null,
-                List.of(new SimpleGrantedAuthority("ROLE_" + role))
+                    email,
+                    null,
+                    List.of(new SimpleGrantedAuthority("ROLE_" + role))
             );
 
             SecurityContextHolder.getContext().setAuthentication(authentication);
@@ -62,7 +68,7 @@ public class JWTAuthorizationFilter extends OncePerRequestFilter {
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             response.setContentType("application/json");
             response.setCharacterEncoding("UTF-8");
-            response.getWriter().write("{\"error\": \"Token invalido o expirado\"}");
+            response.getWriter().write("{\"error\": \"Token inválido o expirado\"}");
             response.getWriter().flush();
             return;
         }
@@ -75,11 +81,11 @@ public class JWTAuthorizationFilter extends OncePerRequestFilter {
         boolean isPost = "POST".equalsIgnoreCase(method);
 
         return path.startsWith("/api/auth/")
-            || path.startsWith("/h2-console/")
-            || (path.startsWith("/api/service-categories") && isGet)
-            || (path.startsWith("/api/services") && isGet)
-            || (path.startsWith("/api/service-features") && isGet)
-            || path.equals("/api/resources/public")
-            || (path.startsWith("/api/contacts") && isPost);
+                || path.startsWith("/h2-console/")
+                || (path.startsWith("/api/service-categories") && isGet)
+                || (path.startsWith("/api/services") && isGet)
+                || (path.startsWith("/api/service-features") && isGet)
+                || path.equals("/api/resources/public")
+                || (path.startsWith("/api/contacts") && isPost);
     }
 }

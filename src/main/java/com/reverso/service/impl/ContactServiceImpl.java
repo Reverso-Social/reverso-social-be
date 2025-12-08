@@ -9,6 +9,7 @@ import com.reverso.repository.ContactRepository;
 import com.reverso.service.interfaces.ContactService;
 import com.reverso.service.interfaces.EmailService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,6 +23,7 @@ import static org.springframework.http.HttpStatus.BAD_REQUEST;
 @Service
 @RequiredArgsConstructor
 @Transactional
+@Slf4j
 public class ContactServiceImpl implements ContactService {
 
     private final ContactRepository repository;
@@ -30,12 +32,28 @@ public class ContactServiceImpl implements ContactService {
 
     @Override
     public ContactResponse create(ContactCreateRequest dto) {
+
         validateRequest(dto);
+
+        log.info("Creando nuevo contacto desde: {}", dto.getEmail());
+
         Contact entity = mapper.toEntity(dto);
         Contact saved = repository.save(entity);
+        log.info("Contacto guardado en BD con ID: {}", saved.getId());
 
-        emailService.sendEmailToAdmin(dto);
-        emailService.sendConfirmationToUser(dto);
+        try {
+            emailService.sendEmailToAdmin(dto);
+            log.info("Email enviado al admin correctamente");
+        } catch (Exception e) {
+            log.error("Error enviando email al admin (el contacto se guardó igualmente): {}", e.getMessage());
+        }
+
+        try {
+            emailService.sendConfirmationToUser(dto);
+            log.info("Email de confirmación enviado al usuario correctamente");
+        } catch (Exception e) {
+            log.error("Error enviando confirmación al usuario (el contacto se guardó igualmente): {}", e.getMessage());
+        }
 
         return mapper.toResponse(saved);
     }
@@ -43,10 +61,24 @@ public class ContactServiceImpl implements ContactService {
     @Override
     @Transactional(readOnly = true)
     public List<ContactResponse> getAll() {
-        return repository.findAll()
-            .stream()
-            .map(mapper::toResponse)
-            .toList();
+
+        log.info("Obteniendo todos los contactos");
+        List<Contact> contacts = repository.findAll();
+        log.info("Encontrados {} contactos en la BD", contacts.size());
+
+        List<ContactResponse> responses = contacts.stream()
+                .map(contact -> {
+                    try {
+                        return mapper.toResponse(contact);
+                    } catch (Exception e) {
+                        log.error("Error mapeando contacto {}: {}", contact.getId(), e.getMessage());
+                        throw e;
+                    }
+                })
+                .toList();
+
+        log.info("{} contactos mapeados correctamente", responses.size());
+        return responses;
     }
 
     @Override
@@ -66,7 +98,7 @@ public class ContactServiceImpl implements ContactService {
         try {
             newStatus = ContactStatus.valueOf(status.toUpperCase());
         } catch (IllegalArgumentException e) {
-            throw new RuntimeException("Estado invalido: " + status);
+            throw new RuntimeException("Estado inválido: " + status);
         }
 
         contact.setStatus(newStatus);
@@ -78,7 +110,6 @@ public class ContactServiceImpl implements ContactService {
     public void delete(UUID id) {
         repository.deleteById(id);
     }
-
     private void validateRequest(ContactCreateRequest dto) {
         if (dto == null) {
             throw new ResponseStatusException(BAD_REQUEST, "El cuerpo de la solicitud es obligatorio");
@@ -93,7 +124,7 @@ public class ContactServiceImpl implements ContactService {
             throw new ResponseStatusException(BAD_REQUEST, "El mensaje es obligatorio");
         }
         if (dto.getAcceptsPrivacy() == null) {
-            throw new ResponseStatusException(BAD_REQUEST, "Debe aceptar la politica de privacidad");
+            throw new ResponseStatusException(BAD_REQUEST, "Debe aceptar la política de privacidad");
         }
     }
 }
