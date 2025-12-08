@@ -7,6 +7,11 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class ReversoSocialBeApplication {
 
     public static void main(String[] args) {
+
+        // Iniciar Spring Boot
+        SpringApplication.run(ReversoSocialBeApplication.class, args);
+
+        // Mostrar banner personalizado
         System.out.println("\n" +
         "╔══════════════════════════════════════════════════════════════════╗\n" +
         "║                     REVERSO SOCIAL - BACKEND API                 ║\n" +
