@@ -22,7 +22,7 @@ public class ReversoSocialBeApplication {
         "║  Usuarios:            /api/users               (ADMIN)           ║\n" +
         "║  Categorías:          /api/service-categories  (GET público)     ║\n" +
         "║  Servicios:           /api/services            (GET público)     ║\n" +
-        "║  Características:     /api/service-features    (GET público)     ║" +
+        "║  Características:     /api/service-features    (GET público)     ║\n" +
         "║  Recursos:            /api/resources           (protegido)       ║\n" +
         "║  Descargas:           /api/resource-downloads  (protegido)       ║\n" +
         "║  Contactos:           /api/contacts            (POST público)    ║\n" +
