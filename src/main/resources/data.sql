@@ -490,72 +490,76 @@ INSERT INTO contacts (id, full_name, email, message, accepts_privacy, status, us
 -- ======================
 
 INSERT INTO blog_posts 
-(id, title, subtitle, slug, content, category, cover_image_url, status, created_at, updated_at, published_at, author_id)
+(id, title, subtitle, slug, content, category, cover_image_path, status, created_at, updated_at, published_at)
 VALUES
 (
-  '11111111-aaaa-bbbb-cccc-000000000001',
-  'El Impacto de la Igualdad en 2024',
-  'Cómo las nuevas políticas transforman el entorno laboral y social',
-  'impacto-igualdad-2024',
-  'En 2024 hemos visto avances significativos en políticas de igualdad. Este artículo explora los hitos clave y su impacto en comunidades locales.',
+  '33333333-aaaa-bbbb-cccc-000000000001',
+  'Igualdad laboral: claves para 2025',
+  'Buenas prácticas en empresas y administraciones',
+  'igualdad-laboral-2025',
+  'La igualdad laboral continúa siendo uno de los ejes prioritarios para crear entornos más seguros, inclusivos y transparentes. En este artículo analizamos medidas clave que podrán aplicar empresas y administraciones a partir del próximo año.',
   'Actualidad',
-  '/images/blog/igualdad-2024.jpg',
+  '/images/blog/igualdad.jpg',
   'PUBLISHED',
-  NOW(), NOW(), NOW(),
-  'a1b2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c5d'
-),
-
-(
-  '11111111-aaaa-bbbb-cccc-000000000002',
-  'Rompiendo la Brecha Salarial',
-  'Un análisis profundo sobre la equidad financiera real',
-  'rompiendo-brecha-salarial',
-  'La brecha salarial es uno de los desafíos estructurales más persistentes. Revisamos los pasos clave para avanzar hacia una igualdad efectiva.',
-  'Economía',
-  '/images/blog/brecha-salarial.jpg',
-  'PUBLISHED',
-  NOW(), NOW(), NOW(),
-  'a1b2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c5d'
-),
-
-(
-  '11111111-aaaa-bbbb-cccc-000000000003',
-  'Nuestra Visión Feminista',
-  'Los valores que mueven el trabajo de Reverso Social',
-  'vision-feminista-reverso',
-  'En este artículo abordamos los principios que guían nuestro enfoque de trabajo: transversalidad, inclusión y compromiso político.',
-  'Institucional',
-  '/images/blog/vision-feminista.jpg',
-  'PUBLISHED',
-  NOW(), NOW(), NOW(),
-  'a1b2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c5d'
-),
-
-(
-  '11111111-aaaa-bbbb-cccc-000000000004',
-  'Proyectos de Inclusión Social',
-  'Un repaso por nuestras iniciativas del último trimestre',
-  'proyectos-inclusion-social',
-  'Hemos impulsado nuevas acciones orientadas a reducir desigualdades, fortalecer redes comunitarias y promover liderazgos femeninos.',
-  'Proyectos',
-  '/images/blog/inclusion-social.jpg',
-  'PUBLISHED',
-  NOW(), NOW(), NOW(),
-  'a1b2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c5d'
-),
-
-(
-  '11111111-aaaa-bbbb-cccc-000000000005',
-  'Economía Feminista: Retos y Horizontes',
-  'Una mirada crítica a los modelos económicos actuales',
-  'economia-feminista-retos',
-  'La economía feminista ofrece herramientas para repensar la producción, los cuidados y la redistribución. Aquí exploramos su impacto práctico.',
-  'Economía',
-  '/images/blog/economia-feminista.jpg',
-  'PUBLISHED',
-  NOW(), NOW(), NOW(),
-  'a1b2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c5d'
+  NOW(), NOW(), NOW()
 );
+INSERT INTO blog_posts 
+(id, title, subtitle, slug, content, category, cover_image_path, status, created_at, updated_at, published_at)
+VALUES
+(
+  '33333333-aaaa-bbbb-cccc-000000000002',
+  'Prevención de violencias machistas',
+  'Acciones estratégicas para entidades locales',
+  'prevencion-violencias-machistas',
+  'Las administraciones locales juegan un papel clave en la prevención de las violencias machistas. Presentamos herramientas fundamentales para implementar políticas efectivas y sostenibles.',
+  'Institucional',
+  '/images/blog/violencias.jpg',
+  'PUBLISHED',
+  NOW(), NOW(), NOW()
+);
+INSERT INTO blog_posts 
+(id, title, subtitle, slug, content, category, cover_image_path, status, created_at, updated_at, published_at)
+VALUES
+(
+  '33333333-aaaa-bbbb-cccc-000000000003',
+  'Diversidad LGTBI+ en organizaciones',
+  'Propuestas para espacios laborales más seguros',
+  'diversidad-lgtbi-organizaciones',
+  'Compartimos propuestas concretas para construir entornos laborales inclusivos con perspectiva LGTBI+, garantizando el respeto y la no discriminación.',
+  'Diversidad',
+  '/images/blog/lgtbi.jpg',
+  'PUBLISHED',
+  NOW(), NOW(), NOW()
+);
+INSERT INTO blog_posts 
+(id, title, subtitle, slug, content, category, cover_image_path, status, created_at, updated_at, published_at)
+VALUES
+(
+  '33333333-aaaa-bbbb-cccc-000000000004',
+  'Proyectos sociocomunitarios',
+  'Iniciativas recientes con impacto real',
+  'proyectos-sociocomunitarios',
+  'Los proyectos sociocomunitarios permiten fortalecer vínculos, reducir desigualdades y promover la participación ciudadana con enfoque feminista.',
+  'Proyectos',
+  '/images/blog/proyectos.jpg',
+  'PUBLISHED',
+  NOW(), NOW(), NOW()
+);
+INSERT INTO blog_posts 
+(id, title, subtitle, slug, content, category, cover_image_path, status, created_at, updated_at, published_at)
+VALUES
+(
+  '33333333-aaaa-bbbb-cccc-000000000005',
+  'Economía feminista y sostenibilidad',
+  'Nuevas perspectivas para el 2024–2025',
+  'economia-feminista-sostenibilidad',
+  'La economía feminista plantea modelos más equilibrados y sostenibles. Analizamos cómo incorporar estos principios en proyectos institucionales.',
+  'Economía',
+  '/images/blog/economia.jpg',
+  'PUBLISHED',
+  NOW(), NOW(), NOW()
+);
+
 
 -- ======================
 -- FIN DEL SCRIPT
