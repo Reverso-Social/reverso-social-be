@@ -9,7 +9,7 @@ public class ReversoSocialBeApplication {
     public static void main(String[] args) {
 
         // Iniciar Spring Boot
-        SpringApplication.run(ReversoSocialBeApplication.class, args);
+        SpringApplication.run(ReversoSocialBeApplication.class, args);  
 
         // Mostrar banner personalizado
         System.out.println("\n" +
