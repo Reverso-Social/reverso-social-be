@@ -84,10 +84,10 @@ public class SecurityConfig {
                 .requestMatchers("/api/users/**").hasRole("ADMIN")
                 
                     // BLOG POSTS
-                .requestMatchers(HttpMethod.GET, "/api/blog-posts/**").permitAll()
-                .requestMatchers(HttpMethod.POST, "/api/blog-posts/**").hasAnyRole("ADMIN", "EDITOR")
-                .requestMatchers(HttpMethod.PUT, "/api/blog-posts/**").hasAnyRole("ADMIN", "EDITOR")
-                .requestMatchers(HttpMethod.DELETE, "/api/blog-posts/**").hasRole("ADMIN")
+                .requestMatchers(HttpMethod.GET, "/api/blogposts/**").permitAll()
+                .requestMatchers(HttpMethod.POST, "/api/blogposts/**").hasAnyRole("ADMIN", "EDITOR")
+                .requestMatchers(HttpMethod.PUT, "/api/blogposts/**").hasAnyRole("ADMIN", "EDITOR")
+                .requestMatchers(HttpMethod.DELETE, "/api/blogposts/**").hasRole("ADMIN")
 
 
                 .anyRequest().authenticated()

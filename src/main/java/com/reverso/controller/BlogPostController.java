@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/api/blog-posts")
+@RequestMapping("/api/blogposts")
 public class BlogPostController {
 
     private final BlogPostService blogPostService;

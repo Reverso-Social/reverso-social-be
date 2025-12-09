@@ -31,7 +31,7 @@ public class ReversoSocialBeApplication {
         "║  Recursos:            /api/resources           (protegido)       ║\n" +
         "║  Descargas:           /api/resource-downloads  (protegido)       ║\n" +
         "║  Contactos:           /api/contacts            (POST público)    ║\n" +
-        "║  Blog:                /api/blog-posts          (GET público)     ║\n" +
+        "║  Blog:                /api/blogposts          (GET público)     ║\n" +
         "╠══════════════════════════════════════════════════════════════════╣\n" +
         "║                      CUENTAS DE ACCESO (DEV)                     ║\n" +
         "╠══════════════════════════════════════════════════════════════════╣\n" +
