@@ -2,6 +2,7 @@ package com.reverso.dto.request;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -16,8 +17,10 @@ import java.util.UUID;
 public class ResourceCreateRequest {
     
     @NotBlank(message = "Title is required")
+    @Size(max = 60, message = "El título no puede superar 60 caracteres")
     private String title;
     
+    @Size(max = 250, message = "La descripción no puede superar 250 caracteres")
     private String description;
     
     @NotBlank(message = "Type is required")

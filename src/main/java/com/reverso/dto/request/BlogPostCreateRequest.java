@@ -1,25 +1,27 @@
 package com.reverso.dto.request;
 
-import lombok.Getter;
-import lombok.Setter;
-import lombok.NoArgsConstructor;
+import com.reverso.model.enums.BlogPostStatus;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
+import jakarta.validation.constraints.Size;
+import lombok.*;
 
-@Getter
-@Setter
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
 public class BlogPostCreateRequest {
-    @NotBlank
+
+    @NotBlank(message = "El título es obligatorio")
+    @Size(max = 120, message = "El título no puede superar 120 caracteres")
     private String title;
-    private String subtitle;
-    @NotBlank
+
+    @NotBlank(message = "El contenido es obligatorio")
     private String content;
+
+    @NotBlank(message = "La categoría es obligatoria")
     private String category;
-    @NotNull
-    private String status;
+
+    @NotNull(message = "El estado es obligatorio")
+    private BlogPostStatus status;
 }

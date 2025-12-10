@@ -1,21 +1,21 @@
 package com.reverso.dto.request;
 
-import lombok.Getter;
-import lombok.Setter;
-import lombok.NoArgsConstructor;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
+import com.reverso.model.enums.BlogPostStatus;
+import jakarta.validation.constraints.Size;
+import lombok.*;
 
-@Getter
-@Setter
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
 public class BlogPostUpdateRequest {
 
+    @Size(max = 120, message = "El título no puede superar 120 caracteres")
     private String title;
-    private String subtitle;
+
     private String content;
+
     private String category;
-    private String status;
+
+    private BlogPostStatus status;
 }

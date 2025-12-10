@@ -6,6 +6,7 @@ import com.reverso.dto.response.BlogPostResponse;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 public interface BlogPostService {
@@ -23,4 +24,9 @@ public interface BlogPostService {
     List<BlogPostResponse> findLatestPublished(int limit);
 
     void delete(UUID id);
+
+    // NUEVOS
+    Map<String, String> uploadImage(UUID id, MultipartFile file);
+
+    void deleteImage(UUID id);
 }
