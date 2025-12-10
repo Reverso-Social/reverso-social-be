@@ -16,6 +16,8 @@ public interface BlogPostService {
 
     BlogPostResponse findById(UUID id);
 
+    BlogPostResponse findBySlug(String slug);
+
     List<BlogPostResponse> findAll(String status, String category);
 
     List<BlogPostResponse> findLatestPublished(int limit);

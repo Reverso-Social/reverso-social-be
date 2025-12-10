@@ -43,6 +43,10 @@ public class BlogPostController {
     public BlogPostResponse findById(@PathVariable UUID id) {
         return blogPostService.findById(id);
     }
+    @GetMapping("/slug/{slug}")
+    public BlogPostResponse findBySlug(@PathVariable String slug) {
+        return blogPostService.findBySlug(slug);
+    }
 
     @GetMapping
     public List<BlogPostResponse> findAll(

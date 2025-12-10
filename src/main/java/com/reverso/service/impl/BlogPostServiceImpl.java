@@ -36,7 +36,7 @@ public class BlogPostServiceImpl implements BlogPostService {
         this.blogPostRepository = blogPostRepository;
         this.blogPostMapper = blogPostMapper;
     }
-
+    
     @Override
     public BlogPostResponse create(BlogPostCreateRequest request, MultipartFile image) {
 
@@ -50,6 +50,13 @@ public class BlogPostServiceImpl implements BlogPostService {
         }
 
         blogPostRepository.save(entity);
+        return blogPostMapper.toResponse(entity);
+    }
+
+    @Override
+    public BlogPostResponse findBySlug(String slug) {
+        BlogPost entity = blogPostRepository.findBySlug(slug)
+            .orElseThrow(() -> new ResourceNotFoundException("BlogPost not found with slug: " + slug));
         return blogPostMapper.toResponse(entity);
     }
 
