@@ -1,11 +1,6 @@
 package com.reverso.dto.response;
 
-import lombok.Getter;
-import lombok.Setter;
-import lombok.NoArgsConstructor;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-
+import lombok.*;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
@@ -22,7 +17,9 @@ public class BlogPostResponse {
     private String slug;
     private String content;
     private String category;
+
     private String coverImageUrl;
+
     private String status;
 
     private LocalDateTime createdAt;

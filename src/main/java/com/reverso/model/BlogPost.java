@@ -33,7 +33,8 @@ public class BlogPost {
 
     private String category;
 
-    private String coverImagePath;
+    // CORRECTO → Usamos URL, NO path
+    private String coverImageUrl;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)

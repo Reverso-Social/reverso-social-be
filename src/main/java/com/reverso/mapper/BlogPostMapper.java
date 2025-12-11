@@ -11,7 +11,7 @@ public interface BlogPostMapper {
 
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "slug", ignore = true)
-    @Mapping(target = "coverImagePath", ignore = true)
+    @Mapping(target = "coverImageUrl", ignore = true)
     @Mapping(target = "createdAt", ignore = true)
     @Mapping(target = "updatedAt", ignore = true)
     @Mapping(target = "publishedAt", ignore = true)
@@ -19,12 +19,11 @@ public interface BlogPostMapper {
 
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "slug", ignore = true)
-    @Mapping(target = "coverImagePath", ignore = true)
+    @Mapping(target = "coverImageUrl", ignore = true)
     @Mapping(target = "createdAt", ignore = true)
     @Mapping(target = "updatedAt", ignore = true)
     @Mapping(target = "publishedAt", ignore = true)
     void updateEntityFromDto(BlogPostUpdateRequest request, @MappingTarget BlogPost entity);
 
-    @Mapping(target = "coverImageUrl", source = "coverImagePath")
     BlogPostResponse toResponse(BlogPost entity);
 }

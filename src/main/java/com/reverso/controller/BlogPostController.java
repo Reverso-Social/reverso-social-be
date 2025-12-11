@@ -14,10 +14,12 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/blogposts")
+@RequiredArgsConstructor
 public class BlogPostController {
 
     private final BlogPostService blogPostService;
@@ -83,6 +85,7 @@ public class BlogPostController {
     }
 
     @DeleteMapping("/{id}")
+    public ResponseEntity<Void> delete(@PathVariable UUID id) {
     public ResponseEntity<Void> delete(@PathVariable UUID id) {
         blogPostService.delete(id);
         return ResponseEntity.noContent().build();

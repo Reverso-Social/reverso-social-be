@@ -11,8 +11,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 
-@Getter
-@Setter
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder

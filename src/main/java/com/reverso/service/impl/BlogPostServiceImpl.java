@@ -11,32 +11,29 @@ import com.reverso.repository.BlogPostRepository;
 import com.reverso.service.interfaces.BlogPostService;
 import com.reverso.service.interfaces.FileStorageService;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.text.Normalizer;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 @Service
 public class BlogPostServiceImpl implements BlogPostService {
 
     private final BlogPostRepository blogPostRepository;
     private final BlogPostMapper blogPostMapper;
-
-    // Inyección opcional hasta que exista la implementación real
-    @Autowired(required = false)
-    private FileStorageService fileStorageService;
+    private final FileStorageService fileStorageService;
 
     public BlogPostServiceImpl(
             BlogPostRepository blogPostRepository,
-            BlogPostMapper blogPostMapper
+            BlogPostMapper blogPostMapper,
+            FileStorageService fileStorageService
     ) {
         this.blogPostRepository = blogPostRepository;
         this.blogPostMapper = blogPostMapper;
+        this.fileStorageService = fileStorageService;
     }
-    
+
     @Override
     public BlogPostResponse create(BlogPostCreateRequest request, MultipartFile image) {
 
@@ -44,19 +41,13 @@ public class BlogPostServiceImpl implements BlogPostService {
 
         entity.setSlug(generateSlug(request.getTitle()));
 
-        if (image != null && !image.isEmpty() && fileStorageService != null) {
-            String path = fileStorageService.saveBlogImage(image);
-            entity.setCoverImagePath(path);
+        if (image != null && !image.isEmpty()) {
+            validateImage(image);
+            String url = fileStorageService.store(image, "blog");
+            entity.setCoverImageUrl(url);
         }
 
         blogPostRepository.save(entity);
-        return blogPostMapper.toResponse(entity);
-    }
-
-    @Override
-    public BlogPostResponse findBySlug(String slug) {
-        BlogPost entity = blogPostRepository.findBySlug(slug)
-            .orElseThrow(() -> new ResourceNotFoundException("BlogPost not found with slug: " + slug));
         return blogPostMapper.toResponse(entity);
     }
 
@@ -72,9 +63,15 @@ public class BlogPostServiceImpl implements BlogPostService {
             entity.setSlug(generateSlug(request.getTitle()));
         }
 
-        if (image != null && !image.isEmpty() && fileStorageService != null) {
-            String path = fileStorageService.saveBlogImage(image);
-            entity.setCoverImagePath(path);
+        if (image != null && !image.isEmpty()) {
+            validateImage(image);
+
+            if (entity.getCoverImageUrl() != null) {
+                fileStorageService.delete(entity.getCoverImageUrl());
+            }
+
+            String url = fileStorageService.store(image, "blog");
+            entity.setCoverImageUrl(url);
         }
 
         blogPostRepository.save(entity);
@@ -83,8 +80,16 @@ public class BlogPostServiceImpl implements BlogPostService {
 
     @Override
     public BlogPostResponse findById(UUID id) {
-        BlogPost entity = blogPostRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("BlogPost not found: " + id));
+        return blogPostRepository.findById(id)
+            .map(blogPostMapper::toResponse)
+            .orElseThrow(() -> new ResourceNotFoundException("BlogPost not found: " + id));
+    }
+
+    @Override
+    public BlogPostResponse findBySlug(String slug) {
+        BlogPost entity = blogPostRepository.findBySlug(slug)
+                .orElseThrow(() -> new ResourceNotFoundException("BlogPost not found with slug: " + slug));
+
         return blogPostMapper.toResponse(entity);
     }
 
@@ -132,12 +137,60 @@ public class BlogPostServiceImpl implements BlogPostService {
         blogPostRepository.deleteById(id);
     }
 
+    // ---------------------------
+    // NUEVOS MÉTODOS DE IMÁGENES
+    // ---------------------------
+
+    @Override
+    public Map<String, String> uploadImage(UUID id, MultipartFile file) {
+
+        BlogPost blog = blogPostRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("BlogPost not found: " + id));
+
+        validateImage(file);
+
+        if (blog.getCoverImageUrl() != null) {
+            fileStorageService.delete(blog.getCoverImageUrl());
+        }
+
+        String url = fileStorageService.store(file, "blog");
+
+        blog.setCoverImageUrl(url);
+        blogPostRepository.save(blog);
+
+        return Map.of("imageUrl", url);
+    }
+
+    @Override
+    public void deleteImage(UUID id) {
+
+        BlogPost blog = blogPostRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("BlogPost not found: " + id));
+
+        if (blog.getCoverImageUrl() != null) {
+            fileStorageService.delete(blog.getCoverImageUrl());
+            blog.setCoverImageUrl(null);
+            blogPostRepository.save(blog);
+        }
+    }
+
+    private void validateImage(MultipartFile image) {
+        String type = image.getContentType();
+
+        if (!List.of("image/jpeg", "image/png", "image/webp").contains(type)) {
+            throw new IllegalArgumentException("Formato de imagen no permitido");
+        }
+
+        if (image.getSize() > 5 * 1024 * 1024) {
+            throw new IllegalArgumentException("La imagen supera el tamaño máximo (5MB)");
+        }
+    }
+
     private String generateSlug(String title) {
         String normalized = Normalizer.normalize(
-                        title.toLowerCase(),
-                        Normalizer.Form.NFD
-                )
-                .replaceAll("\\p{InCombiningDiacriticalMarks}+", "");
+                title.toLowerCase(),
+                Normalizer.Form.NFD
+        ).replaceAll("\\p{InCombiningDiacriticalMarks}+", "");
 
         return normalized
                 .replaceAll("[^a-z0-9\\s-]", "")
