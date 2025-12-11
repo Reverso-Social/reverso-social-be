@@ -1,5 +1,4 @@
 package com.reverso.controller;
-import java.util.Map;
 import com.reverso.dto.request.BlogPostCreateRequest;
 import com.reverso.dto.request.BlogPostUpdateRequest;
 import com.reverso.dto.response.BlogPostResponse;
