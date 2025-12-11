@@ -3,6 +3,9 @@ package com.reverso.service.interfaces;
 import com.reverso.dto.request.BlogPostCreateRequest;
 import com.reverso.dto.request.BlogPostUpdateRequest;
 import com.reverso.dto.response.BlogPostResponse;
+
+import jakarta.validation.Valid;
+
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
@@ -23,4 +26,6 @@ public interface BlogPostService {
     List<BlogPostResponse> findLatestPublished(int limit);
 
     void delete(UUID id);
+
+    BlogPostResponse createBlogPost(BlogPostCreateRequest request, MultipartFile image);
 }

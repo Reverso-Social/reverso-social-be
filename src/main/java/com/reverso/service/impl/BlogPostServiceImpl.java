@@ -144,4 +144,10 @@ public class BlogPostServiceImpl implements BlogPostService {
                 .replaceAll("\\s+", "-")
                 .replaceAll("-{2,}", "-");
     }
+
+    @Override
+    public BlogPostResponse createBlogPost(BlogPostCreateRequest request, MultipartFile image) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'createBlogPost'");
+    }
 }

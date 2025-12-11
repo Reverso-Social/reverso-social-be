@@ -5,7 +5,11 @@ import com.reverso.dto.request.BlogPostUpdateRequest;
 import com.reverso.dto.response.BlogPostResponse;
 import com.reverso.service.interfaces.BlogPostService;
 
+import jakarta.validation.Valid;
+
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -22,30 +26,44 @@ public class BlogPostController {
         this.blogPostService = blogPostService;
     }
 
-    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public BlogPostResponse create(
-            @RequestPart("data") BlogPostCreateRequest request,
+   @PostMapping(
+            consumes = MediaType.MULTIPART_FORM_DATA_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
+    public ResponseEntity<BlogPostResponse> createBlogPost(
+            @Valid @RequestPart("data") BlogPostCreateRequest request,
             @RequestPart(value = "image", required = false) MultipartFile image
     ) {
-        return blogPostService.create(request, image);
+        BlogPostResponse response = blogPostService.createBlogPost(request, image);
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
-    @PutMapping(value = "/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public BlogPostResponse update(
+
+
+   @PutMapping(
+            value = "/{id}",
+            consumes = MediaType.MULTIPART_FORM_DATA_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
+    public ResponseEntity<BlogPostResponse> updateBlogPost(
             @PathVariable UUID id,
-            @RequestPart("data") BlogPostUpdateRequest request,
+            @Valid @RequestPart("data") BlogPostUpdateRequest request,
             @RequestPart(value = "image", required = false) MultipartFile image
     ) {
-        return blogPostService.update(id, request, image);
+        BlogPostResponse response = blogPostService.update(id, request, image);
+        return ResponseEntity.ok(response);
     }
 
-    @GetMapping("/{id}")
-    public BlogPostResponse findById(@PathVariable UUID id) {
-        return blogPostService.findById(id);
+    @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<BlogPostResponse> findById(@PathVariable UUID id) {
+        BlogPostResponse response = blogPostService.findById(id);
+        return ResponseEntity.ok(response);
     }
-    @GetMapping("/slug/{slug}")
-    public BlogPostResponse findBySlug(@PathVariable String slug) {
-        return blogPostService.findBySlug(slug);
+
+    @GetMapping(value = "/slug/{slug}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<BlogPostResponse> findBySlug(@PathVariable String slug) {
+        BlogPostResponse response = blogPostService.findBySlug(slug);
+        return ResponseEntity.ok(response);
     }
 
     @GetMapping
@@ -56,13 +74,17 @@ public class BlogPostController {
         return blogPostService.findAll(status, category);
     }
 
-    @GetMapping("/latest")
-    public List<BlogPostResponse> findLatest(@RequestParam(defaultValue = "5") int limit) {
-        return blogPostService.findLatestPublished(limit);
+    @GetMapping(value = "/latest", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<List<BlogPostResponse>> findLatest(
+            @RequestParam(defaultValue = "5") int limit
+    ) {
+        List<BlogPostResponse> responses = blogPostService.findLatestPublished(limit);
+        return ResponseEntity.ok(responses);
     }
 
     @DeleteMapping("/{id}")
-    public void delete(@PathVariable UUID id) {
+    public ResponseEntity<Void> delete(@PathVariable UUID id) {
         blogPostService.delete(id);
+        return ResponseEntity.noContent().build();
     }
 }
