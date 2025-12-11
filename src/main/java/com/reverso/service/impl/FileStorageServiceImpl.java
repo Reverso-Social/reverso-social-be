@@ -10,24 +10,20 @@ import java.nio.file.*;
 @Service
 public class FileStorageServiceImpl implements FileStorageService {
 
-    private final String uploadRoot = "uploads"; // carpeta raíz en proyecto
-
+    private final String uploadRoot = "uploads";
     @Override
     public String store(MultipartFile file, String folder) {
         try {
             Path uploadPath = Paths.get(uploadRoot, folder);
             Files.createDirectories(uploadPath);
 
-            // Siempre nombre único (timestamp + nombre original)
             String originalName = file.getOriginalFilename();
             String filename = System.currentTimeMillis() + "-" + originalName;
 
             Path filePath = uploadPath.resolve(filename);
 
-            // Guardar archivo en disco
             file.transferTo(filePath.toFile());
 
-            // URL accesible por el front
             return "/uploads/" + folder + "/" + filename;
 
         } catch (IOException e) {
@@ -40,7 +36,6 @@ public class FileStorageServiceImpl implements FileStorageService {
         if (fileUrl == null || fileUrl.isBlank()) return;
 
         try {
-            // /uploads/blog/123.webp → uploads/blog/123.webp
             String relative = fileUrl.replace("/uploads", "");
             Path filePath = Paths.get("uploads" + relative);
 

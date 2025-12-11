@@ -1,11 +1,12 @@
 package com.reverso.controller;
-
+import java.util.Map;
 import com.reverso.dto.request.BlogPostCreateRequest;
 import com.reverso.dto.request.BlogPostUpdateRequest;
 import com.reverso.dto.response.BlogPostResponse;
 import com.reverso.service.interfaces.BlogPostService;
 
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -14,7 +15,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 
 @RestController
@@ -24,11 +24,7 @@ public class BlogPostController {
 
     private final BlogPostService blogPostService;
 
-    public BlogPostController(BlogPostService blogPostService) {
-        this.blogPostService = blogPostService;
-    }
-
-   @PostMapping(
+    @PostMapping(
             consumes = MediaType.MULTIPART_FORM_DATA_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE
     )
@@ -39,10 +35,7 @@ public class BlogPostController {
         BlogPostResponse response = blogPostService.createBlogPost(request, image);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
-
-
-
-   @PutMapping(
+    @PutMapping(
             value = "/{id}",
             consumes = MediaType.MULTIPART_FORM_DATA_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE
@@ -68,12 +61,13 @@ public class BlogPostController {
         return ResponseEntity.ok(response);
     }
 
-    @GetMapping
-    public List<BlogPostResponse> findAll(
+    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<List<BlogPostResponse>> findAll(
             @RequestParam(required = false) String status,
             @RequestParam(required = false) String category
     ) {
-        return blogPostService.findAll(status, category);
+        List<BlogPostResponse> responses = blogPostService.findAll(status, category);
+        return ResponseEntity.ok(responses);
     }
 
     @GetMapping(value = "/latest", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -85,7 +79,6 @@ public class BlogPostController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable UUID id) {
     public ResponseEntity<Void> delete(@PathVariable UUID id) {
         blogPostService.delete(id);
         return ResponseEntity.noContent().build();

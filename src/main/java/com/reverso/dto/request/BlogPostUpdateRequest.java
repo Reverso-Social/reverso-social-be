@@ -25,8 +25,6 @@ public class BlogPostUpdateRequest {
     private String content;
     @Size(max = 50, message = "Categoría debe tener menos de 50 caracteres")    
     private String category;
-
-    private BlogPostStatus status;
     @Size(max = 20, message = "Estado debe tener menos de 20 caracteres")
     private BlogPostStatus status;
 }

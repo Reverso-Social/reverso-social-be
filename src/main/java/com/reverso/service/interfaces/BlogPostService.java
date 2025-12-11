@@ -20,5 +20,4 @@ public interface BlogPostService {
     Map<String, String> uploadImage(UUID id, MultipartFile file);
     void deleteImage(UUID id);
     void delete(UUID id);
-
 }

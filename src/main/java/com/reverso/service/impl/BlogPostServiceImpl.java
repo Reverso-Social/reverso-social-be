@@ -10,12 +10,13 @@ import com.reverso.model.enums.BlogPostStatus;
 import com.reverso.repository.BlogPostRepository;
 import com.reverso.service.interfaces.BlogPostService;
 import com.reverso.service.interfaces.FileStorageService;
-
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.text.Normalizer;
-import java.util.*;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
 @Service
 public class BlogPostServiceImpl implements BlogPostService {
@@ -35,7 +36,7 @@ public class BlogPostServiceImpl implements BlogPostService {
     }
 
     @Override
-    public BlogPostResponse create(BlogPostCreateRequest request, MultipartFile image) {
+    public BlogPostResponse createBlogPost(BlogPostCreateRequest request, MultipartFile image) {
 
         BlogPost entity = blogPostMapper.toEntity(request);
 
@@ -81,8 +82,8 @@ public class BlogPostServiceImpl implements BlogPostService {
     @Override
     public BlogPostResponse findById(UUID id) {
         return blogPostRepository.findById(id)
-            .map(blogPostMapper::toResponse)
-            .orElseThrow(() -> new ResourceNotFoundException("BlogPost not found: " + id));
+                .map(blogPostMapper::toResponse)
+                .orElseThrow(() -> new ResourceNotFoundException("BlogPost not found: " + id));
     }
 
     @Override
@@ -136,11 +137,6 @@ public class BlogPostServiceImpl implements BlogPostService {
         }
         blogPostRepository.deleteById(id);
     }
-
-    // ---------------------------
-    // NUEVOS MÉTODOS DE IMÁGENES
-    // ---------------------------
-
     @Override
     public Map<String, String> uploadImage(UUID id, MultipartFile file) {
 
@@ -185,7 +181,6 @@ public class BlogPostServiceImpl implements BlogPostService {
             throw new IllegalArgumentException("La imagen supera el tamaño máximo (5MB)");
         }
     }
-
     private String generateSlug(String title) {
         String normalized = Normalizer.normalize(
                 title.toLowerCase(),
@@ -196,11 +191,5 @@ public class BlogPostServiceImpl implements BlogPostService {
                 .replaceAll("[^a-z0-9\\s-]", "")
                 .replaceAll("\\s+", "-")
                 .replaceAll("-{2,}", "-");
-    }
-
-    @Override
-    public BlogPostResponse createBlogPost(BlogPostCreateRequest request, MultipartFile image) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'createBlogPost'");
     }
 }
