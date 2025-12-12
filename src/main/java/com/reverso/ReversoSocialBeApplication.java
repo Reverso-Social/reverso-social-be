@@ -8,10 +8,8 @@ public class ReversoSocialBeApplication {
 
     public static void main(String[] args) {
 
-        // Iniciar Spring Boot
         SpringApplication.run(ReversoSocialBeApplication.class, args);  
 
-        // Mostrar banner personalizado
         System.out.println("\n" +
         "╔══════════════════════════════════════════════════════════════════╗\n" +
         "║                     REVERSO SOCIAL - BACKEND API                 ║\n" +
@@ -31,7 +29,7 @@ public class ReversoSocialBeApplication {
         "║  Recursos:            /api/resources           (protegido)       ║\n" +
         "║  Descargas:           /api/resource-downloads  (protegido)       ║\n" +
         "║  Contactos:           /api/contacts            (POST público)    ║\n" +
-        "║  Blog:                /api/blogposts          (GET público)     ║\n" +
+        "║  Blog:                /api/blogposts          (GET público)      ║\n" +
         "╠══════════════════════════════════════════════════════════════════╣\n" +
         "║                      CUENTAS DE ACCESO (DEV)                     ║\n" +
         "╠══════════════════════════════════════════════════════════════════╣\n" +

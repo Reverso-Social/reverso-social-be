@@ -28,8 +28,7 @@ public class BlogPostServiceImpl implements BlogPostService {
     public BlogPostServiceImpl(
             BlogPostRepository blogPostRepository,
             BlogPostMapper blogPostMapper,
-            FileStorageService fileStorageService
-    ) {
+            FileStorageService fileStorageService) {
         this.blogPostRepository = blogPostRepository;
         this.blogPostMapper = blogPostMapper;
         this.fileStorageService = fileStorageService;
@@ -37,9 +36,7 @@ public class BlogPostServiceImpl implements BlogPostService {
 
     @Override
     public BlogPostResponse createBlogPost(BlogPostCreateRequest request, MultipartFile image) {
-
         BlogPost entity = blogPostMapper.toEntity(request);
-
         entity.setSlug(generateSlug(request.getTitle()));
 
         if (image != null && !image.isEmpty()) {
@@ -54,19 +51,16 @@ public class BlogPostServiceImpl implements BlogPostService {
 
     @Override
     public BlogPostResponse update(UUID id, BlogPostUpdateRequest request, MultipartFile image) {
-
         BlogPost entity = blogPostRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("BlogPost not found: " + id));
-
         blogPostMapper.updateEntityFromDto(request, entity);
 
-        if (request.getTitle() != null) {
+        if (request.getTitle() != null && !request.getTitle().isBlank()) {
             entity.setSlug(generateSlug(request.getTitle()));
         }
 
         if (image != null && !image.isEmpty()) {
             validateImage(image);
-
             if (entity.getCoverImageUrl() != null) {
                 fileStorageService.delete(entity.getCoverImageUrl());
             }
@@ -90,7 +84,6 @@ public class BlogPostServiceImpl implements BlogPostService {
     public BlogPostResponse findBySlug(String slug) {
         BlogPost entity = blogPostRepository.findBySlug(slug)
                 .orElseThrow(() -> new ResourceNotFoundException("BlogPost not found with slug: " + slug));
-
         return blogPostMapper.toResponse(entity);
     }
 
@@ -102,27 +95,25 @@ public class BlogPostServiceImpl implements BlogPostService {
         if (status != null && category != null) {
             posts = blogPostRepository.findByStatusAndCategoryIgnoreCase(
                     BlogPostStatus.valueOf(status.toUpperCase()),
-                    category
-            );
+                    category);
         } else if (status != null) {
             posts = blogPostRepository.findByStatus(
-                    BlogPostStatus.valueOf(status.toUpperCase())
-            );
+                    BlogPostStatus.valueOf(status.toUpperCase()));
         } else if (category != null) {
             posts = blogPostRepository.findByCategoryIgnoreCase(category);
         } else {
             posts = blogPostRepository.findAll();
         }
 
-        return posts.stream().map(blogPostMapper::toResponse).toList();
+        return posts.stream()
+                .map(blogPostMapper::toResponse)
+                .toList();
     }
 
     @Override
     public List<BlogPostResponse> findLatestPublished(int limit) {
-        List<BlogPost> posts =
-                blogPostRepository.findTop5ByStatusOrderByPublishedAtDesc(
-                        BlogPostStatus.PUBLISHED
-                );
+        List<BlogPost> posts = blogPostRepository.findTop5ByStatusOrderByPublishedAtDesc(
+                BlogPostStatus.PUBLISHED);
 
         return posts.stream()
                 .map(blogPostMapper::toResponse)
@@ -137,9 +128,9 @@ public class BlogPostServiceImpl implements BlogPostService {
         }
         blogPostRepository.deleteById(id);
     }
+
     @Override
     public Map<String, String> uploadImage(UUID id, MultipartFile file) {
-
         BlogPost blog = blogPostRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("BlogPost not found: " + id));
 
@@ -181,11 +172,11 @@ public class BlogPostServiceImpl implements BlogPostService {
             throw new IllegalArgumentException("La imagen supera el tamaño máximo (5MB)");
         }
     }
+
     private String generateSlug(String title) {
         String normalized = Normalizer.normalize(
                 title.toLowerCase(),
-                Normalizer.Form.NFD
-        ).replaceAll("\\p{InCombiningDiacriticalMarks}+", "");
+                Normalizer.Form.NFD).replaceAll("\\p{InCombiningDiacriticalMarks}+", "");
 
         return normalized
                 .replaceAll("[^a-z0-9\\s-]", "")
