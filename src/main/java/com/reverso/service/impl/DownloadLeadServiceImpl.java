@@ -30,14 +30,6 @@ public class DownloadLeadServiceImpl implements DownloadLeadService {
         Resource resource = resourceRepository.findById(request.getResourceId())
                 .orElseThrow(() -> new RuntimeException("Resource not found with id: " + request.getResourceId()));
 
-        // Permitir múltiples descargas del mismo email (para fines de marketing)
-        // Si quieres evitar duplicados, descomenta esto:
-        // boolean alreadyExists = leadRepository.existsByEmailAndResourceId(
-        //         request.getEmail(), request.getResourceId());
-        // if (alreadyExists) {
-        //     throw new RuntimeException("This email has already downloaded this resource");
-        // }
-
         DownloadLead lead = DownloadLead.builder()
                 .name(request.getName())
                 .email(request.getEmail())
