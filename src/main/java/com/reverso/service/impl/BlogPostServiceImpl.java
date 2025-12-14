@@ -37,7 +37,7 @@ public class BlogPostServiceImpl implements BlogPostService {
     @Override
     public BlogPostResponse createBlogPost(BlogPostCreateRequest request, MultipartFile image) {
         BlogPost entity = blogPostMapper.toEntity(request);
-        entity.setSlug(generateSlug(request.getTitle()));
+        entity.setSlug(generateUniqueSlug(request.getTitle()));
 
         if (image != null && !image.isEmpty()) {
             validateImage(image);
@@ -56,7 +56,7 @@ public class BlogPostServiceImpl implements BlogPostService {
         blogPostMapper.updateEntityFromDto(request, entity);
 
         if (request.getTitle() != null && !request.getTitle().isBlank()) {
-            entity.setSlug(generateSlug(request.getTitle()));
+            entity.setSlug(generateUniqueSlug(request.getTitle()));
         }
 
         if (image != null && !image.isEmpty()) {
@@ -182,5 +182,18 @@ public class BlogPostServiceImpl implements BlogPostService {
                 .replaceAll("[^a-z0-9\\s-]", "")
                 .replaceAll("\\s+", "-")
                 .replaceAll("-{2,}", "-");
+    }
+
+    private String generateUniqueSlug(String title) {
+        String baseSlug = generateSlug(title);
+        String uniqueSlug = baseSlug;
+        int counter = 1;
+
+        while (blogPostRepository.findBySlug(uniqueSlug).isPresent()) {
+            uniqueSlug = baseSlug + "-" + counter;
+            counter++;
+        }
+
+        return uniqueSlug;
     }
 }
