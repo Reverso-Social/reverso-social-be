@@ -22,7 +22,6 @@ import static org.springframework.http.HttpStatus.BAD_REQUEST;
 
 @Service
 @RequiredArgsConstructor
-@Transactional
 @Slf4j
 public class ContactServiceImpl implements ContactService {
 
@@ -32,12 +31,13 @@ public class ContactServiceImpl implements ContactService {
 
     @Override
     public ContactResponse create(ContactCreateRequest dto) {
-
         validateRequest(dto);
-
         log.info("Creando nuevo contacto desde: {}", dto.getEmail());
 
         Contact entity = mapper.toEntity(dto);
+        // repository.save() is transactional by default, so we don't need
+        // @Transactional on this method
+        // This keeps the DB transaction short and separate from email sending.
         Contact saved = repository.save(entity);
         log.info("Contacto guardado en BD con ID: {}", saved.getId());
 
@@ -61,12 +61,11 @@ public class ContactServiceImpl implements ContactService {
     @Override
     @Transactional(readOnly = true)
     public List<ContactResponse> getAll() {
-
         log.info("Obteniendo todos los contactos");
         List<Contact> contacts = repository.findAll();
         log.info("Encontrados {} contactos en la BD", contacts.size());
 
-        List<ContactResponse> responses = contacts.stream()
+        return contacts.stream()
                 .map(contact -> {
                     try {
                         return mapper.toResponse(contact);
@@ -76,29 +75,29 @@ public class ContactServiceImpl implements ContactService {
                     }
                 })
                 .toList();
-
-        log.info("{} contactos mapeados correctamente", responses.size());
-        return responses;
     }
 
     @Override
     @Transactional(readOnly = true)
     public ContactResponse getById(UUID id) {
         Contact contact = repository.findById(id)
-            .orElseThrow(() -> new RuntimeException("Contacto no encontrado"));
+                .orElseThrow(() -> new ResponseStatusException(org.springframework.http.HttpStatus.NOT_FOUND,
+                        "Contacto no encontrado"));
         return mapper.toResponse(contact);
     }
 
     @Override
+    @Transactional
     public ContactResponse updateStatus(UUID id, String status) {
         Contact contact = repository.findById(id)
-            .orElseThrow(() -> new RuntimeException("Contacto no encontrado"));
+                .orElseThrow(() -> new ResponseStatusException(org.springframework.http.HttpStatus.NOT_FOUND,
+                        "Contacto no encontrado"));
 
         ContactStatus newStatus;
         try {
             newStatus = ContactStatus.valueOf(status.toUpperCase());
         } catch (IllegalArgumentException e) {
-            throw new RuntimeException("Estado inválido: " + status);
+            throw new ResponseStatusException(BAD_REQUEST, "Estado inválido: " + status);
         }
 
         contact.setStatus(newStatus);
@@ -108,8 +107,12 @@ public class ContactServiceImpl implements ContactService {
 
     @Override
     public void delete(UUID id) {
+        if (!repository.existsById(id)) {
+            throw new ResponseStatusException(org.springframework.http.HttpStatus.NOT_FOUND, "Contacto no encontrado");
+        }
         repository.deleteById(id);
     }
+
     private void validateRequest(ContactCreateRequest dto) {
         if (dto == null) {
             throw new ResponseStatusException(BAD_REQUEST, "El cuerpo de la solicitud es obligatorio");
@@ -123,7 +126,8 @@ public class ContactServiceImpl implements ContactService {
         if (!StringUtils.hasText(dto.getMessage())) {
             throw new ResponseStatusException(BAD_REQUEST, "El mensaje es obligatorio");
         }
-        if (dto.getAcceptsPrivacy() == null) {
+        // Fix: acceptsPrivacy must be strictly true
+        if (!Boolean.TRUE.equals(dto.getAcceptsPrivacy())) {
             throw new ResponseStatusException(BAD_REQUEST, "Debe aceptar la política de privacidad");
         }
     }
