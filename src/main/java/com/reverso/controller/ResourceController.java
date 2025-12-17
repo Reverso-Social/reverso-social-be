@@ -66,10 +66,6 @@ public class ResourceController {
         service.delete(id);
         return ResponseEntity.noContent().build();
     }
-
-    // -----------------------------
-    // UPLOAD DE ARCHIVOS (PDF/IMG)
-    // -----------------------------
     @PostMapping(
             value = "/upload",
             consumes = MediaType.MULTIPART_FORM_DATA_VALUE
