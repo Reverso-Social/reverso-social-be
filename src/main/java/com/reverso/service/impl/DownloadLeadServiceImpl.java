@@ -38,7 +38,6 @@ public class DownloadLeadServiceImpl implements DownloadLeadService {
         if (existingLead.isPresent()) {
             lead = existingLead.get();
             lead.setLastDownloadedAt(java.time.LocalDateTime.now());
-            // Optionally update name if needed, but requirements focus on timestamp
             if (!lead.getName().equals(request.getName())) {
                 lead.setName(request.getName());
             }
@@ -48,8 +47,6 @@ public class DownloadLeadServiceImpl implements DownloadLeadService {
                     .email(request.getEmail())
                     .resource(resource)
                     .build();
-            // onCreate hook handles initial timestamps, or set manually
-            // Since we added hooks in Entity, we rely on them or set explicitly if needed
         }
 
         DownloadLead savedLead = leadRepository.save(lead);
