@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -30,11 +31,26 @@ public class DownloadLeadServiceImpl implements DownloadLeadService {
         Resource resource = resourceRepository.findById(request.getResourceId())
                 .orElseThrow(() -> new RuntimeException("Resource not found with id: " + request.getResourceId()));
 
-        DownloadLead lead = DownloadLead.builder()
-                .name(request.getName())
-                .email(request.getEmail())
-                .resource(resource)
-                .build();
+        Optional<DownloadLead> existingLead = leadRepository.findByEmailAndResourceId(request.getEmail(),
+                request.getResourceId());
+
+        DownloadLead lead;
+        if (existingLead.isPresent()) {
+            lead = existingLead.get();
+            lead.setLastDownloadedAt(java.time.LocalDateTime.now());
+            // Optionally update name if needed, but requirements focus on timestamp
+            if (!lead.getName().equals(request.getName())) {
+                lead.setName(request.getName());
+            }
+        } else {
+            lead = DownloadLead.builder()
+                    .name(request.getName())
+                    .email(request.getEmail())
+                    .resource(resource)
+                    .build();
+            // onCreate hook handles initial timestamps, or set manually
+            // Since we added hooks in Entity, we rely on them or set explicitly if needed
+        }
 
         DownloadLead savedLead = leadRepository.save(lead);
         return mapper.toResponse(savedLead);
