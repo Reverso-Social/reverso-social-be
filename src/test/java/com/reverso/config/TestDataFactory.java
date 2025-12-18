@@ -3,6 +3,8 @@ package com.reverso.config;
 import com.reverso.dto.request.ContactCreateRequest;
 import com.reverso.dto.request.BlogPostCreateRequest;
 import com.reverso.dto.request.BlogPostUpdateRequest;
+import com.reverso.dto.request.UserCreateRequest;
+import com.reverso.dto.request.LoginRequest;
 import com.reverso.model.Contact;
 import com.reverso.model.User;
 import com.reverso.model.BlogPost;
@@ -14,10 +16,7 @@ import org.springframework.mock.web.MockMultipartFile;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
-
 public class TestDataFactory {
-
-    // ========== CONTACT TEST DATA ==========
 
     public static ContactCreateRequest createValidContactRequest() {
         return ContactCreateRequest.builder()
@@ -83,19 +82,95 @@ public class TestDataFactory {
         return contact;
     }
 
-    // ========== USER TEST DATA ==========
 
     public static User createValidUser() {
         return User.builder()
                 .id(UUID.randomUUID())
                 .fullName("Admin User")
                 .email("admin@reverso.com")
-                .password("password123")
+                .phone("+34612345678")
+                .companyName("Reverso Social")
+                .password("$2a$10$dummyHashedPassword") 
                 .role(Role.ADMIN)
+                .createdAt(LocalDateTime.now())
+                .updatedAt(LocalDateTime.now())
                 .build();
     }
 
-    // ========== BLOGPOST TEST DATA ==========
+    public static User createUserWithRole(Role role) {
+        User user = createValidUser();
+        user.setRole(role);
+        return user;
+    }
+
+    public static User createUserWithEmail(String email) {
+        User user = createValidUser();
+        user.setEmail(email);
+        return user;
+    }
+
+    public static UserCreateRequest createValidUserCreateRequest() {
+        return UserCreateRequest.builder()
+                .fullName("John Doe")
+                .email("john.doe@example.com")
+                .phone("+34612345678")
+                .companyName("Test Company")
+                .password("password123")
+                .role("USER")
+                .build();
+    }
+
+    public static UserCreateRequest createAdminUserRequest() {
+        return UserCreateRequest.builder()
+                .fullName("Admin User")
+                .email("admin@test.com")
+                .phone("+34612345678")
+                .companyName("Admin Company")
+                .password("adminpass123")
+                .role("ADMIN")
+                .build();
+    }
+
+    public static UserCreateRequest createUserRequestWithoutEmail() {
+        return UserCreateRequest.builder()
+                .fullName("John Doe")
+                .email("")
+                .password("password123")
+                .role("USER")
+                .build();
+    }
+
+    public static UserCreateRequest createUserRequestWithShortPassword() {
+        return UserCreateRequest.builder()
+                .fullName("John Doe")
+                .email("john@example.com")
+                .password("12345") 
+                .role("USER")
+                .build();
+    }
+
+    public static UserCreateRequest createUserRequestWithInvalidEmail() {
+        return UserCreateRequest.builder()
+                .fullName("John Doe")
+                .email("invalid-email") 
+                .password("password123")
+                .role("USER")
+                .build();
+    }
+
+    public static LoginRequest createValidLoginRequest() {
+        return LoginRequest.builder()
+                .email("admin@reverso.com")
+                .password("password123")
+                .build();
+    }
+
+    public static LoginRequest createInvalidLoginRequest() {
+        return LoginRequest.builder()
+                .email("admin@reverso.com")
+                .password("wrongpassword")
+                .build();
+    }
 
     public static BlogPostCreateRequest createValidBlogPostRequest() {
         return BlogPostCreateRequest.builder()
