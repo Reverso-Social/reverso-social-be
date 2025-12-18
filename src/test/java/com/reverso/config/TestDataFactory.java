@@ -5,6 +5,10 @@ import com.reverso.dto.request.BlogPostCreateRequest;
 import com.reverso.dto.request.BlogPostUpdateRequest;
 import com.reverso.dto.request.UserCreateRequest;
 import com.reverso.dto.request.LoginRequest;
+import com.reverso.dto.request.ServiceRequest;
+import com.reverso.dto.response.ServiceResponse;
+import com.reverso.model.Service;
+import com.reverso.model.ServiceCategory;
 import com.reverso.model.Contact;
 import com.reverso.model.User;
 import com.reverso.model.BlogPost;
@@ -82,7 +86,6 @@ public class TestDataFactory {
         return contact;
     }
 
-
     public static User createValidUser() {
         return User.builder()
                 .id(UUID.randomUUID())
@@ -90,7 +93,7 @@ public class TestDataFactory {
                 .email("admin@reverso.com")
                 .phone("+34612345678")
                 .companyName("Reverso Social")
-                .password("$2a$10$dummyHashedPassword") 
+                .password("$2a$10$dummyHashedPassword")
                 .role(Role.ADMIN)
                 .createdAt(LocalDateTime.now())
                 .updatedAt(LocalDateTime.now())
@@ -144,7 +147,7 @@ public class TestDataFactory {
         return UserCreateRequest.builder()
                 .fullName("John Doe")
                 .email("john@example.com")
-                .password("12345") 
+                .password("12345")
                 .role("USER")
                 .build();
     }
@@ -152,7 +155,7 @@ public class TestDataFactory {
     public static UserCreateRequest createUserRequestWithInvalidEmail() {
         return UserCreateRequest.builder()
                 .fullName("John Doe")
-                .email("invalid-email") 
+                .email("invalid-email")
                 .password("password123")
                 .role("USER")
                 .build();
@@ -194,7 +197,7 @@ public class TestDataFactory {
 
     public static BlogPostCreateRequest createBlogPostRequestWithShortTitle() {
         return BlogPostCreateRequest.builder()
-                .title("ABC") 
+                .title("ABC")
                 .subtitle("Subtítulo")
                 .content("Contenido del post")
                 .category("Tecnología")
@@ -256,8 +259,7 @@ public class TestDataFactory {
                 "image",
                 "test-image.jpg",
                 "image/jpeg",
-                "fake image content".getBytes()
-        );
+                "fake image content".getBytes());
     }
 
     public static MockMultipartFile createInvalidImageFile() {
@@ -265,8 +267,7 @@ public class TestDataFactory {
                 "image",
                 "test-file.txt",
                 "text/plain",
-                "not an image".getBytes()
-        );
+                "not an image".getBytes());
     }
 
     public static MockMultipartFile createOversizedImageFile() {
@@ -275,7 +276,44 @@ public class TestDataFactory {
                 "image",
                 "large-image.jpg",
                 "image/jpeg",
-                largeContent
-        );
+                largeContent);
+    }
+
+    public static ServiceCategory createValidServiceCategory() {
+        return ServiceCategory.builder()
+                .id(UUID.randomUUID())
+                .name("Development")
+                .active(true)
+                .createdAt(LocalDateTime.now())
+                .updatedAt(LocalDateTime.now())
+                .build();
+    }
+
+    public static Service createValidService(ServiceCategory category) {
+        return Service.builder()
+                .id(UUID.randomUUID())
+                .name("Web Development")
+                .active(true)
+                .sortOrder(1)
+                .category(category)
+                .createdAt(LocalDateTime.now())
+                .updatedAt(LocalDateTime.now())
+                .build();
+    }
+
+    public static ServiceRequest createValidServiceRequest(UUID categoryId) {
+        return ServiceRequest.builder()
+                .name("Web Development")
+                .categoryId(categoryId)
+                .active(true)
+                .build();
+    }
+
+    public static ServiceResponse createValidServiceResponse(UUID id) {
+        return ServiceResponse.builder()
+                .id(id)
+                .name("Web Development")
+                .active(true)
+                .build();
     }
 }
