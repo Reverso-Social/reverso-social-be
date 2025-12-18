@@ -22,36 +22,35 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc(addFilters = false)
 public class BlogPostControllerTest {
 
-    @Autowired
-    private MockMvc mockMvc;
+        @Autowired
+        private MockMvc mockMvc;
 
-    @MockitoBean
-    private BlogPostService blogPostService;
+        @MockitoBean
+        private BlogPostService blogPostService;
 
-    @Test
-    void findLatest_ShouldReturnLatestPosts() throws Exception {
-        // Given
-        BlogPostResponse post1 = BlogPostResponse.builder()
-                .id(UUID.randomUUID())
-                .title("Latest Post 1")
-                .slug("latest-post-1")
-                .publishedAt(LocalDateTime.now())
-                .build();
+        @Test
+        void findLatest_ShouldReturnLatestPosts() throws Exception {
 
-        BlogPostResponse post2 = BlogPostResponse.builder()
-                .id(UUID.randomUUID())
-                .title("Latest Post 2")
-                .slug("latest-post-2")
-                .publishedAt(LocalDateTime.now().minusDays(1))
-                .build();
+                BlogPostResponse post1 = BlogPostResponse.builder()
+                                .id(UUID.randomUUID())
+                                .title("Latest Post 1")
+                                .slug("latest-post-1")
+                                .publishedAt(LocalDateTime.now())
+                                .build();
 
-        given(blogPostService.findLatestPublished(5)).willReturn(List.of(post1, post2));
+                BlogPostResponse post2 = BlogPostResponse.builder()
+                                .id(UUID.randomUUID())
+                                .title("Latest Post 2")
+                                .slug("latest-post-2")
+                                .publishedAt(LocalDateTime.now().minusDays(1))
+                                .build();
 
-        // When/Then
-        mockMvc.perform(get("/api/blogposts/latest?limit=5")
-                .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$[0].title").value("Latest Post 1"))
-                .andExpect(jsonPath("$[1].title").value("Latest Post 2"));
-    }
+                given(blogPostService.findLatestPublished(5)).willReturn(List.of(post1, post2));
+
+                mockMvc.perform(get("/api/blogposts/latest?limit=5")
+                                .contentType(MediaType.APPLICATION_JSON))
+                                .andExpect(status().isOk())
+                                .andExpect(jsonPath("$[0].title").value("Latest Post 1"))
+                                .andExpect(jsonPath("$[1].title").value("Latest Post 2"));
+        }
 }

@@ -35,9 +35,7 @@ public class ContactServiceImpl implements ContactService {
         log.info("Creando nuevo contacto desde: {}", dto.getEmail());
 
         Contact entity = mapper.toEntity(dto);
-        // repository.save() is transactional by default, so we don't need
-        // @Transactional on this method
-        // This keeps the DB transaction short and separate from email sending.
+
         Contact saved = repository.save(entity);
         log.info("Contacto guardado en BD con ID: {}", saved.getId());
 
@@ -126,7 +124,7 @@ public class ContactServiceImpl implements ContactService {
         if (!StringUtils.hasText(dto.getMessage())) {
             throw new ResponseStatusException(BAD_REQUEST, "El mensaje es obligatorio");
         }
-        // Fix: acceptsPrivacy must be strictly true
+
         if (!Boolean.TRUE.equals(dto.getAcceptsPrivacy())) {
             throw new ResponseStatusException(BAD_REQUEST, "Debe aceptar la política de privacidad");
         }

@@ -40,7 +40,7 @@ public class DownloadLeadServiceTest {
 
     @Test
     void createLead_NewLead_ShouldSetCountToOne() {
-        // Given
+
         UUID resourceId = UUID.randomUUID();
         String email = "test@example.com";
         DownloadLeadRequest request = new DownloadLeadRequest("Test User", email, resourceId);
@@ -56,17 +56,15 @@ public class DownloadLeadServiceTest {
                 .name("Test User")
                 .email(email)
                 .resource(resource)
-                .downloadCount(1) // Simulate DB default/PrePersist if we were using it, but here we mock save
+                .downloadCount(1)
                 .createdAt(LocalDateTime.now())
                 .lastDownloadedAt(LocalDateTime.now())
                 .build();
 
-        // Simulate repository save returning the object (though PrePersist logic
-        // happens in JPA, we verify logic sent to save)
         when(leadRepository.save(any(DownloadLead.class))).thenAnswer(invocation -> {
             DownloadLead l = invocation.getArgument(0);
             if (l.getDownloadCount() == 0)
-                l.setDownloadCount(1); // Simulate PrePersist manually for mock
+                l.setDownloadCount(1);
             return l;
         });
 
@@ -74,10 +72,8 @@ public class DownloadLeadServiceTest {
         responseDto.setDownloadCount(1);
         when(mapper.toResponse(any(DownloadLead.class))).thenReturn(responseDto);
 
-        // When
         DownloadLeadResponse result = service.createLead(request);
 
-        // Then
         assertNotNull(result);
         assertEquals(1, result.getDownloadCount());
         verify(leadRepository).save(any(DownloadLead.class));
@@ -85,7 +81,7 @@ public class DownloadLeadServiceTest {
 
     @Test
     void createLead_ExistingLead_ShouldIncrementCount() {
-        // Given
+
         UUID resourceId = UUID.randomUUID();
         String email = "test@example.com";
         DownloadLeadRequest request = new DownloadLeadRequest("Test User Updated", email, resourceId);
@@ -108,13 +104,11 @@ public class DownloadLeadServiceTest {
         when(leadRepository.save(any(DownloadLead.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
         DownloadLeadResponse responseDto = new DownloadLeadResponse();
-        responseDto.setDownloadCount(6); // Expecting 5 + 1
+        responseDto.setDownloadCount(6);
         when(mapper.toResponse(any(DownloadLead.class))).thenReturn(responseDto);
 
-        // When
         DownloadLeadResponse result = service.createLead(request);
 
-        // Then
         assertNotNull(result);
         assertEquals(6, result.getDownloadCount());
         verify(leadRepository).save(existingLead);

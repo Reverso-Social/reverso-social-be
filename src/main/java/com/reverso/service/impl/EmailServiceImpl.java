@@ -51,9 +51,9 @@ public class EmailServiceImpl implements EmailService {
             log.info("Email enviado al admin: {}", adminEmail);
 
         } catch (Exception e) {
-            // Log full stack trace for debugging
+
             log.error("Error enviando email al admin: {}", e.getMessage(), e);
-            // Re-throw if necessary, or swallow. ContactServiceImpl swallows it anyway.
+
             throw new RuntimeException("Error enviando email al administrador", e);
         }
     }
@@ -69,7 +69,7 @@ public class EmailServiceImpl implements EmailService {
             }
 
             SimpleMailMessage reply = new SimpleMailMessage();
-            reply.setFrom(mailUsername); // Use env var, not hardcoded
+            reply.setFrom(mailUsername);
             reply.setTo(dto.getEmail());
             reply.setSubject("Hemos recibido tu mensaje — Reverso Social");
 
