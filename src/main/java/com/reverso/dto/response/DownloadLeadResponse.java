@@ -19,4 +19,6 @@ public class DownloadLeadResponse {
     private UUID resourceId;
     private String resourceTitle;
     private LocalDateTime createdAt;
+    private LocalDateTime lastDownloadedAt;
+    private int downloadCount;
 }
