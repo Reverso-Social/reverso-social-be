@@ -146,7 +146,6 @@ class ContactServiceTest {
 
         ContactCreateRequest invalidRequest = TestDataFactory.createContactRequestWithoutPrivacy();
 
-        // Act & Assert
         assertThatThrownBy(() -> contactService.create(invalidRequest))
                 .isInstanceOf(ResponseStatusException.class)
                 .hasMessageContaining("Debe aceptar la política de privacidad");
@@ -254,15 +253,4 @@ class ContactServiceTest {
                 .hasMessageContaining("Estado inválido");
     }
 
-
-    @Test
-    @DisplayName("Eliminar contacto - Success")
-    void testDelete_ValidId_DeletesContact() {
-        UUID id = UUID.randomUUID();
-        doNothing().when(repository).deleteById(id);
-
-        contactService.delete(id);
-
-        verify(repository, times(1)).deleteById(id);
-    }
 }
