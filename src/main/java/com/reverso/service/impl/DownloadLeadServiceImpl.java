@@ -38,10 +38,13 @@ public class DownloadLeadServiceImpl implements DownloadLeadService {
         if (existingLead.isPresent()) {
             lead = existingLead.get();
             lead.setLastDownloadedAt(java.time.LocalDateTime.now());
+            lead.setDownloadCount(lead.getDownloadCount() + 1);
             if (!lead.getName().equals(request.getName())) {
                 lead.setName(request.getName());
             }
-        } else {
+        } else
+
+        {
             lead = DownloadLead.builder()
                     .name(request.getName())
                     .email(request.getEmail())

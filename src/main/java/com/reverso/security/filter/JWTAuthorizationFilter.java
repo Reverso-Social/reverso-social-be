@@ -21,11 +21,10 @@ public class JWTAuthorizationFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request,
-                                    HttpServletResponse response,
-                                    FilterChain filterChain)
+            HttpServletResponse response,
+            FilterChain filterChain)
             throws ServletException, IOException {
 
-        // 👇 Permitir pre-flight CORS requests
         if ("OPTIONS".equalsIgnoreCase(request.getMethod())) {
             filterChain.doFilter(request, response);
             return;
@@ -59,8 +58,7 @@ public class JWTAuthorizationFilter extends OncePerRequestFilter {
             Authentication authentication = new UsernamePasswordAuthenticationToken(
                     email,
                     null,
-                    List.of(new SimpleGrantedAuthority("ROLE_" + role))
-            );
+                    List.of(new SimpleGrantedAuthority("ROLE_" + role)));
 
             SecurityContextHolder.getContext().setAuthentication(authentication);
 
