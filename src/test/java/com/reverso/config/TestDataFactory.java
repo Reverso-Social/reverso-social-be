@@ -5,16 +5,24 @@ import com.reverso.dto.request.BlogPostCreateRequest;
 import com.reverso.dto.request.BlogPostUpdateRequest;
 import com.reverso.dto.request.UserCreateRequest;
 import com.reverso.dto.request.LoginRequest;
+import com.reverso.dto.request.ResourceCreateRequest;
+import com.reverso.dto.request.ResourceUpdateRequest;
+import com.reverso.dto.request.ResourceDownloadRequest;
+import com.reverso.dto.request.DownloadLeadRequest;
 import com.reverso.dto.request.ServiceRequest;
 import com.reverso.dto.response.ServiceResponse;
-import com.reverso.model.Service;
-import com.reverso.model.ServiceCategory;
 import com.reverso.model.Contact;
 import com.reverso.model.User;
 import com.reverso.model.BlogPost;
+import com.reverso.model.Resource;
+import com.reverso.model.ResourceDownload;
+import com.reverso.model.DownloadLead;
+import com.reverso.model.Service;
+import com.reverso.model.ServiceCategory;
 import com.reverso.model.enums.ContactStatus;
 import com.reverso.model.enums.Role;
 import com.reverso.model.enums.BlogPostStatus;
+import com.reverso.model.enums.ResourceType;
 import org.springframework.mock.web.MockMultipartFile;
 
 import java.time.LocalDateTime;
@@ -277,6 +285,131 @@ public class TestDataFactory {
                 "large-image.jpg",
                 "image/jpeg",
                 largeContent);
+    }
+
+    public static ResourceCreateRequest createValidResourceCreateRequest() {
+        return ResourceCreateRequest.builder()
+                .title("Guía completa de testing")
+                .description("Una guía práctica sobre testing en Spring Boot")
+                .type("GUIDE")
+                .fileUrl("http://localhost/files/resources/test-guide.pdf")
+                .previewImageUrl("http://localhost/images/resources/preview.jpg")
+                .isPublic(true)
+                .build();
+    }
+
+    public static ResourceCreateRequest createResourceRequestWithoutTitle() {
+        return ResourceCreateRequest.builder()
+                .title("")
+                .description("Descripción")
+                .type("GUIDE")
+                .fileUrl("http://localhost/files/test.pdf")
+                .isPublic(true)
+                .build();
+    }
+
+    public static ResourceCreateRequest createResourceRequestWithoutType() {
+        return ResourceCreateRequest.builder()
+                .title("Recurso sin tipo")
+                .description("Descripción")
+                .type("")
+                .fileUrl("http://localhost/files/test.pdf")
+                .isPublic(true)
+                .build();
+    }
+
+    public static ResourceUpdateRequest createValidResourceUpdateRequest() {
+        return new ResourceUpdateRequest();
+    }
+
+    public static Resource createValidResource() {
+        return Resource.builder()
+                .id(UUID.randomUUID())
+                .title("Guía completa de testing")
+                .description("Una guía práctica sobre testing en Spring Boot")
+                .type(ResourceType.GUIDE)
+                .fileUrl("http://localhost/files/resources/test-guide.pdf")
+                .previewImageUrl("http://localhost/images/resources/preview.jpg")
+                .isPublic(true)
+                .createdAt(LocalDateTime.now())
+                .updatedAt(LocalDateTime.now())
+                .build();
+    }
+
+    public static Resource createResourceWithType(ResourceType type) {
+        Resource resource = createValidResource();
+        resource.setType(type);
+        return resource;
+    }
+
+    public static Resource createPrivateResource() {
+        Resource resource = createValidResource();
+        resource.setIsPublic(false);
+        return resource;
+    }
+
+    public static Resource createPublicResource() {
+        Resource resource = createValidResource();
+        resource.setIsPublic(true);
+        return resource;
+    }
+
+    public static ResourceDownloadRequest createValidResourceDownloadRequest() {
+        return ResourceDownloadRequest.builder()
+                .userId(UUID.randomUUID())
+                .resourceId(UUID.randomUUID())
+                .build();
+    }
+
+    public static ResourceDownload createValidResourceDownload() {
+        return ResourceDownload.builder()
+                .id(UUID.randomUUID())
+                .user(createValidUser())
+                .resource(createValidResource())
+                .createdAt(LocalDateTime.now())
+                .build();
+    }
+
+    public static DownloadLeadRequest createValidDownloadLeadRequest() {
+        return DownloadLeadRequest.builder()
+                .name("John Doe")
+                .email("john.doe@example.com")
+                .resourceId(UUID.randomUUID())
+                .build();
+    }
+
+    public static DownloadLeadRequest createDownloadLeadRequestWithoutName() {
+        return DownloadLeadRequest.builder()
+                .name("")
+                .email("test@example.com")
+                .resourceId(UUID.randomUUID())
+                .build();
+    }
+
+    public static DownloadLeadRequest createDownloadLeadRequestWithInvalidEmail() {
+        return DownloadLeadRequest.builder()
+                .name("John Doe")
+                .email("invalid-email")
+                .resourceId(UUID.randomUUID())
+                .build();
+    }
+
+    public static DownloadLead createValidDownloadLead() {
+        return DownloadLead.builder()
+                .id(UUID.randomUUID())
+                .name("John Doe")
+                .email("john.doe@example.com")
+                .resource(createValidResource())
+                .createdAt(LocalDateTime.now())
+                .lastDownloadedAt(LocalDateTime.now())
+                .downloadCount(1)
+                .build();
+    }
+
+    public static DownloadLead createDownloadLeadWithEmail(String email) {
+        DownloadLead lead = createValidDownloadLead();
+        lead.setEmail(email);
+        return lead;
     }
 
     public static ServiceCategory createValidServiceCategory() {
