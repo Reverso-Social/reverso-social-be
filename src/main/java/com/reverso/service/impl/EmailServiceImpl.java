@@ -7,6 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 @Service
 @RequiredArgsConstructor
@@ -15,19 +16,22 @@ public class EmailServiceImpl implements EmailService {
 
     private final JavaMailSender mailSender;
 
+    @org.springframework.beans.factory.annotation.Value("${MAIL_USERNAME}")
+    private String mailUsername;
+
+    @org.springframework.beans.factory.annotation.Value("${ADMIN_EMAIL:#{null}}")
+    private String adminEmail;
+
     @Override
     public void sendEmailToAdmin(ContactCreateRequest dto) {
 
         try {
-            String adminEmail = System.getenv("ADMIN_EMAIL");
-            String mailUsername = System.getenv("MAIL_USERNAME");
-
-            if (adminEmail == null || adminEmail.isEmpty()) {
+            if (!StringUtils.hasText(adminEmail)) {
                 log.warn("ADMIN_EMAIL no está configurado en .env — no se enviará email al admin.");
                 return;
             }
 
-            if (mailUsername == null || mailUsername.isEmpty()) {
+            if (!StringUtils.hasText(mailUsername)) {
                 log.warn("MAIL_USERNAME no está configurado en .env — no se puede enviar email.");
                 return;
             }
@@ -38,17 +42,18 @@ public class EmailServiceImpl implements EmailService {
             mail.setSubject("Nuevo mensaje desde Reverso Social");
 
             mail.setText(
-                "Has recibido un nuevo mensaje desde el formulario:\n\n" +
-                "Nombre completo: " + dto.getFullName() + "\n" +
-                "Email: " + dto.getEmail() + "\n\n" +
-                "Mensaje:\n" + dto.getMessage() + "\n"
-            );
+                    "Has recibido un nuevo mensaje desde el formulario:\n\n" +
+                            "Nombre completo: " + dto.getFullName() + "\n" +
+                            "Email: " + dto.getEmail() + "\n\n" +
+                            "Mensaje:\n" + dto.getMessage() + "\n");
 
             mailSender.send(mail);
             log.info("Email enviado al admin: {}", adminEmail);
 
         } catch (Exception e) {
+
             log.error("Error enviando email al admin: {}", e.getMessage(), e);
+
             throw new RuntimeException("Error enviando email al administrador", e);
         }
     }
@@ -57,19 +62,24 @@ public class EmailServiceImpl implements EmailService {
     public void sendConfirmationToUser(ContactCreateRequest dto) {
 
         try {
+
+            if (!StringUtils.hasText(mailUsername)) {
+                log.warn("MAIL_USERNAME no está configurado en .env — no se puede enviar confirmación al usuario.");
+                return;
+            }
+
             SimpleMailMessage reply = new SimpleMailMessage();
-            reply.setFrom("a9003728@outlook.es");  // Puedes parametrizar esto más adelante
+            reply.setFrom(mailUsername);
             reply.setTo(dto.getEmail());
             reply.setSubject("Hemos recibido tu mensaje — Reverso Social");
 
             reply.setText(
-                "Hola " + dto.getFullName() + ",\n\n" +
-                "Gracias por ponerte en contacto con Reverso Social.\n\n" +
-                "Hemos recibido tu mensaje y nuestro equipo lo está revisando.\n" +
-                "Te responderemos lo antes posible.\n\n" +
-                "Un abrazo,\n" +
-                "El equipo de Reverso Social"
-            );
+                    "Hola " + dto.getFullName() + ",\n\n" +
+                            "Gracias por ponerte en contacto con Reverso Social.\n\n" +
+                            "Hemos recibido tu mensaje y nuestro equipo lo está revisando.\n" +
+                            "Te responderemos lo antes posible.\n\n" +
+                            "Un abrazo,\n" +
+                            "El equipo de Reverso Social");
 
             mailSender.send(reply);
 

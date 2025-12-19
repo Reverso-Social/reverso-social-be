@@ -29,8 +29,16 @@ public class DownloadLead {
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
+    @Column(name = "last_downloaded_at")
+    private LocalDateTime lastDownloadedAt;
+
+    @Column(name = "download_count", nullable = false)
+    private int downloadCount;
+
     @PrePersist
     protected void onCreate() {
         createdAt = LocalDateTime.now();
+        lastDownloadedAt = LocalDateTime.now();
+        downloadCount = 1;
     }
 }

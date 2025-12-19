@@ -14,9 +14,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
-@SuppressWarnings("null")
 @Service
 @RequiredArgsConstructor
 @Transactional
@@ -31,11 +31,26 @@ public class DownloadLeadServiceImpl implements DownloadLeadService {
         Resource resource = resourceRepository.findById(request.getResourceId())
                 .orElseThrow(() -> new RuntimeException("Resource not found with id: " + request.getResourceId()));
 
-        DownloadLead lead = DownloadLead.builder()
-                .name(request.getName())
-                .email(request.getEmail())
-                .resource(resource)
-                .build();
+        Optional<DownloadLead> existingLead = leadRepository.findByEmailAndResourceId(request.getEmail(),
+                request.getResourceId());
+
+        DownloadLead lead;
+        if (existingLead.isPresent()) {
+            lead = existingLead.get();
+            lead.setLastDownloadedAt(java.time.LocalDateTime.now());
+            lead.setDownloadCount(lead.getDownloadCount() + 1);
+            if (!lead.getName().equals(request.getName())) {
+                lead.setName(request.getName());
+            }
+        } else
+
+        {
+            lead = DownloadLead.builder()
+                    .name(request.getName())
+                    .email(request.getEmail())
+                    .resource(resource)
+                    .build();
+        }
 
         DownloadLead savedLead = leadRepository.save(lead);
         return mapper.toResponse(savedLead);
