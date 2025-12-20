@@ -19,6 +19,12 @@ public class DataLoader implements CommandLineRunner {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
 
+    @org.springframework.beans.factory.annotation.Value("${app.security.admin-password}")
+    private String adminPassword;
+
+    @org.springframework.beans.factory.annotation.Value("${app.security.editor-password}")
+    private String editorPassword;
+
     @Override
     public void run(String... args) {
         log.info("Inicializando usuarios por defecto...");
@@ -32,7 +38,7 @@ public class DataLoader implements CommandLineRunner {
             User admin = User.builder()
                     .fullName("Equipo Reverso Social")
                     .email("admin@reversosocial.com")
-                    .password(passwordEncoder.encode("password123"))
+                    .password(passwordEncoder.encode(adminPassword))
                     .phone("+34 900 000 000")
                     .companyName("Reverso Social")
                     .role(Role.ADMIN)
@@ -48,7 +54,7 @@ public class DataLoader implements CommandLineRunner {
             User editor = User.builder()
                     .fullName("Colaboradora Externa")
                     .email("editor@reversosocial.com")
-                    .password(passwordEncoder.encode("password123"))
+                    .password(passwordEncoder.encode(editorPassword))
                     .phone("+34 900 000 001")
                     .companyName("Reverso Social")
                     .role(Role.EDITOR)
