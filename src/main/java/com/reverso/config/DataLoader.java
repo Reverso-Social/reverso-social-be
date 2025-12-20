@@ -34,36 +34,46 @@ public class DataLoader implements CommandLineRunner {
 
     private void createDefaultUsers() {
 
-        if (!userRepository.existsByEmail("admin@reversosocial.com")) {
-            User admin = User.builder()
-                    .fullName("Equipo Reverso Social")
-                    .email("admin@reversosocial.com")
-                    .password(passwordEncoder.encode(adminPassword))
-                    .phone("+34 900 000 000")
-                    .companyName("Reverso Social")
-                    .role(Role.ADMIN)
-                    .createdAt(LocalDateTime.now())
-                    .updatedAt(LocalDateTime.now())
-                    .build();
+        userRepository.findByEmail("admin@reversosocial.com").ifPresentOrElse(
+                user -> {
+                    user.setPassword(passwordEncoder.encode(adminPassword));
+                    userRepository.save(user);
+                    log.info("Usuario ADMIN actualizado con contraseña del entorno");
+                },
+                () -> {
+                    User admin = User.builder()
+                            .fullName("Equipo Reverso Social")
+                            .email("admin@reversosocial.com")
+                            .password(passwordEncoder.encode(adminPassword))
+                            .phone("+34 900 000 000")
+                            .companyName("Reverso Social")
+                            .role(Role.ADMIN)
+                            .createdAt(LocalDateTime.now())
+                            .updatedAt(LocalDateTime.now())
+                            .build();
+                    userRepository.save(admin);
+                    log.info("Usuario ADMIN creado");
+                });
 
-            userRepository.save(admin);
-            log.info("Usuario ADMIN creado");
-        }
-
-        if (!userRepository.existsByEmail("editor@reversosocial.com")) {
-            User editor = User.builder()
-                    .fullName("Colaboradora Externa")
-                    .email("editor@reversosocial.com")
-                    .password(passwordEncoder.encode(editorPassword))
-                    .phone("+34 900 000 001")
-                    .companyName("Reverso Social")
-                    .role(Role.EDITOR)
-                    .createdAt(LocalDateTime.now())
-                    .updatedAt(LocalDateTime.now())
-                    .build();
-
-            userRepository.save(editor);
-            log.info("Usuario EDITOR creado");
-        }
+        userRepository.findByEmail("editor@reversosocial.com").ifPresentOrElse(
+                user -> {
+                    user.setPassword(passwordEncoder.encode(editorPassword));
+                    userRepository.save(user);
+                    log.info("Usuario EDITOR actualizado con contraseña del entorno");
+                },
+                () -> {
+                    User editor = User.builder()
+                            .fullName("Colaboradora Externa")
+                            .email("editor@reversosocial.com")
+                            .password(passwordEncoder.encode(editorPassword))
+                            .phone("+34 900 000 001")
+                            .companyName("Reverso Social")
+                            .role(Role.EDITOR)
+                            .createdAt(LocalDateTime.now())
+                            .updatedAt(LocalDateTime.now())
+                            .build();
+                    userRepository.save(editor);
+                    log.info("Usuario EDITOR creado");
+                });
     }
 }
