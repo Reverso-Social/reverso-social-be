@@ -17,6 +17,10 @@ import java.util.Arrays;
 
 @Configuration
 public class SecurityConfig {
+
+        @org.springframework.beans.factory.annotation.Value("${app.cors.allowed-origins}")
+        private String allowedOrigins;
+
         private final CustomAuthenticationManager authenticationManager;
 
         public SecurityConfig(CustomAuthenticationManager authenticationManager) {
@@ -100,7 +104,7 @@ public class SecurityConfig {
         @Bean
         public CorsConfigurationSource corsConfigurationSource() {
                 CorsConfiguration configuration = new CorsConfiguration();
-                configuration.setAllowedOriginPatterns(Arrays.asList("*"));
+                configuration.setAllowedOriginPatterns(Arrays.asList(allowedOrigins.split(",")));
                 configuration.setAllowedMethods(Arrays.asList(
                                 "GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH", "HEAD"));
                 configuration.setAllowedHeaders(Arrays.asList(
