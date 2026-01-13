@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.nio.file.*;
 
 @Service
+@org.springframework.context.annotation.Profile("dev")
 public class FileStorageServiceImpl implements FileStorageService {
 
     private static final Logger log = LoggerFactory.getLogger(FileStorageServiceImpl.class);
@@ -30,7 +31,6 @@ public class FileStorageServiceImpl implements FileStorageService {
 
             Files.createDirectories(uploadPath);
 
-  
             String originalName = file.getOriginalFilename();
             if (originalName == null || originalName.isBlank()) {
                 originalName = "file";
@@ -40,7 +40,6 @@ public class FileStorageServiceImpl implements FileStorageService {
             Path filePath = uploadPath.resolve(filename);
 
             log.info("Ruta final del archivo: {}", filePath);
-
 
             file.transferTo(filePath.toFile());
 
@@ -58,7 +57,8 @@ public class FileStorageServiceImpl implements FileStorageService {
 
     @Override
     public void delete(String fileUrl) {
-        if (fileUrl == null || fileUrl.isBlank()) return;
+        if (fileUrl == null || fileUrl.isBlank())
+            return;
 
         try {
             String relative = fileUrl.replace("/uploads", "");
