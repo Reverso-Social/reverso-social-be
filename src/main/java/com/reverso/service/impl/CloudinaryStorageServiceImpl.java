@@ -35,15 +35,12 @@ public class CloudinaryStorageServiceImpl implements FileStorageService {
             String safeFolder = (folder == null || folder.isEmpty()) ? "reverso_social" : folder;
 
             // Upload parameters
-            // We use the original filename (without extension) as the public_id if desired,
-            // or let Cloudinary generate a random one.
-            // Here we let Cloudinary generate a random ID to avoid collisions, but put it
-            // in a folder.
+            // We let Cloudinary generate a random ID to avoid collisions, but put it in a
+            // folder.
             @SuppressWarnings("rawtypes")
             Map params = ObjectUtils.asMap(
                     "folder", safeFolder,
-                    "resource_type", "auto" // Detects image/video/raw
-            );
+                    "resource_type", "auto");
 
             log.info("Uploading file to Cloudinary. Folder: {}", safeFolder);
 
@@ -68,9 +65,6 @@ public class CloudinaryStorageServiceImpl implements FileStorageService {
 
         try {
             // Extract public_id from URL
-            // Example URL:
-            // https://res.cloudinary.com/cloudname/image/upload/v123456789/folder/filename.jpg
-            // We need: folder/filename
 
             String publicId = extractPublicIdFromUrl(fileUrl);
             if (publicId == null) {
@@ -89,25 +83,19 @@ public class CloudinaryStorageServiceImpl implements FileStorageService {
 
     private String extractPublicIdFromUrl(String url) {
         try {
-            // This is a simplified extraction.
-            // Real-world URLs might differ. Ideally, we should store the public_id in the
-            // DB.
-            // But for now, we try to parse it from the URL.
             // Typical structure: .../upload/v<version>/<folder>/<id>.<extension>
 
             int uploadIndex = url.indexOf("/upload/");
             if (uploadIndex == -1)
                 return null;
 
-            String afterUpload = url.substring(uploadIndex + 8); // Skip "/upload/"
+            String afterUpload = url.substring(uploadIndex + 8);
 
-            // Skip version if present (v123456/)
             if (afterUpload.startsWith("v") && afterUpload.indexOf("/") > 0) {
                 int slashIndex = afterUpload.indexOf("/");
                 afterUpload = afterUpload.substring(slashIndex + 1);
             }
 
-            // Remove extension
             int dotIndex = afterUpload.lastIndexOf(".");
             if (dotIndex != -1) {
                 afterUpload = afterUpload.substring(0, dotIndex);

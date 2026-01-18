@@ -19,7 +19,7 @@ public class ReversoSocialBeApplication {
                     "║              REVERSO SOCIAL - BACKEND API (MODO DEV)             ║\n" +
                     "╠══════════════════════════════════════════════════════════════════╣\n" +
                     "║  API Base:           http://localhost:8080/api                   ║\n" +
-                    "║  Database:           PostgreSQL (Conectado)                      ║\n" +
+                    "║  Database:           PostgreSQL / Cloudinary (Conectado)         ║\n" +
                     "╠══════════════════════════════════════════════════════════════════╣\n" +
                     "║  ⚠️  ATENCIÓN: Estás en modo DESARROLLO.                         ║\n" +
                     "║      No subas credenciales al repositorio.                       ║\n" +

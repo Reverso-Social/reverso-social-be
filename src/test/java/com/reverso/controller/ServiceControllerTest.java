@@ -10,7 +10,7 @@ import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -38,7 +38,7 @@ class ServiceControllerTest {
     @Autowired
     private ObjectMapper objectMapper;
 
-    @MockBean
+    @MockitoBean
     private ServiceService serviceService;
 
     private ServiceRequest validRequest;
@@ -120,12 +120,12 @@ class ServiceControllerTest {
     void testFilterServices() throws Exception {
         Page<ServiceResponse> page = new PageImpl<>(List.of(validResponse));
         Mockito.when(serviceService.filterServices(eq(categoryId), eq(true), eq("Test"), any(Pageable.class)))
-               .thenReturn(page);
+                .thenReturn(page);
 
         mockMvc.perform(get("/api/services/filter")
-                        .param("categoryId", categoryId.toString())
-                        .param("active", "true")
-                        .param("name", "Test"))
+                .param("categoryId", categoryId.toString())
+                .param("active", "true")
+                .param("name", "Test"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.content[0].id").value(serviceId.toString()));
     }

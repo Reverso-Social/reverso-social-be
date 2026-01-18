@@ -7,7 +7,7 @@ import com.reverso.dto.request.UserCreateRequest;
 import com.reverso.dto.request.LoginRequest;
 import com.reverso.dto.request.ResourceCreateRequest;
 import com.reverso.dto.request.ResourceUpdateRequest;
-import com.reverso.dto.request.ResourceDownloadRequest;
+
 import com.reverso.dto.request.DownloadLeadRequest;
 import com.reverso.dto.request.ServiceRequest;
 import com.reverso.dto.response.ServiceResponse;
@@ -15,7 +15,7 @@ import com.reverso.model.Contact;
 import com.reverso.model.User;
 import com.reverso.model.BlogPost;
 import com.reverso.model.Resource;
-import com.reverso.model.ResourceDownload;
+
 import com.reverso.model.DownloadLead;
 import com.reverso.model.Service;
 import com.reverso.model.ServiceCategory;
@@ -352,22 +352,6 @@ public class TestDataFactory {
         Resource resource = createValidResource();
         resource.setIsPublic(true);
         return resource;
-    }
-
-    public static ResourceDownloadRequest createValidResourceDownloadRequest() {
-        return ResourceDownloadRequest.builder()
-                .userId(UUID.randomUUID())
-                .resourceId(UUID.randomUUID())
-                .build();
-    }
-
-    public static ResourceDownload createValidResourceDownload() {
-        return ResourceDownload.builder()
-                .id(UUID.randomUUID())
-                .user(createValidUser())
-                .resource(createValidResource())
-                .createdAt(LocalDateTime.now())
-                .build();
     }
 
     public static DownloadLeadRequest createValidDownloadLeadRequest() {

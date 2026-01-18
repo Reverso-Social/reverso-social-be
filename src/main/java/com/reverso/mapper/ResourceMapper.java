@@ -16,13 +16,13 @@ public interface ResourceMapper {
     @Mapping(target = "type", source = "type", qualifiedByName = "typeToString")
     @Mapping(target = "userId", source = "user.id")
     @Mapping(target = "userName", source = "user.fullName")
-    @Mapping(target = "downloadCount", expression = "java(resource.getDownloads() != null ? (long)resource.getDownloads().size() : 0L)")
+    @Mapping(target = "downloadCount", expression = "java(0L)")
     ResourceResponse toResponse(Resource resource);
 
     @Mapping(target = "type", source = "type", qualifiedByName = "stringToType")
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "user", ignore = true)
-    @Mapping(target = "downloads", ignore = true)
+
     @Mapping(target = "createdAt", ignore = true)
     @Mapping(target = "updatedAt", ignore = true)
     Resource toEntity(ResourceCreateRequest dto);
@@ -30,7 +30,7 @@ public interface ResourceMapper {
     @Mapping(target = "type", source = "type", qualifiedByName = "stringToType")
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "user", ignore = true)
-    @Mapping(target = "downloads", ignore = true)
+
     @Mapping(target = "createdAt", ignore = true)
     @Mapping(target = "updatedAt", ignore = true)
     void updateFromRequest(ResourceUpdateRequest dto, @MappingTarget Resource resource);

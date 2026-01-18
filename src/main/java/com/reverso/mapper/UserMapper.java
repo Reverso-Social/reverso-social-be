@@ -20,7 +20,7 @@ public interface UserMapper {
     @Mapping(target = "managedServices", ignore = true)
     @Mapping(target = "managedResources", ignore = true)
     @Mapping(target = "handledContacts", ignore = true)
-    @Mapping(target = "downloads", ignore = true)
+
     @Mapping(target = "createdAt", ignore = true)
     @Mapping(target = "updatedAt", ignore = true)
     User toEntity(UserCreateRequest dto);

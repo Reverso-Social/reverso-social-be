@@ -10,7 +10,7 @@ import java.io.IOException;
 import java.nio.file.*;
 
 @Service
-@org.springframework.context.annotation.Profile("dev")
+@org.springframework.context.annotation.Profile({ "dev", "test" })
 public class FileStorageServiceImpl implements FileStorageService {
 
     private static final Logger log = LoggerFactory.getLogger(FileStorageServiceImpl.class);

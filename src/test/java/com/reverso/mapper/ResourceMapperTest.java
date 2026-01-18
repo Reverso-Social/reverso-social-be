@@ -3,7 +3,7 @@ package com.reverso.mapper;
 import com.reverso.config.TestDataFactory;
 import com.reverso.dto.request.ResourceCreateRequest;
 import com.reverso.dto.response.ResourceResponse;
-import com.reverso.mapper.ResourceMapperImpl;
+
 import com.reverso.model.Resource;
 import com.reverso.model.enums.ResourceType;
 import org.junit.jupiter.api.DisplayName;
@@ -13,7 +13,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@SpringBootTest(classes = {ResourceMapperImpl.class})
+@SpringBootTest(classes = { ResourceMapperImpl.class })
 @DisplayName("ResourceMapper - Tests")
 class ResourceMapperTest {
 

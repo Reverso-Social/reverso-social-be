@@ -5,7 +5,10 @@ import com.reverso.dto.response.DownloadLeadResponse;
 import com.reverso.service.interfaces.DownloadLeadService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.*;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import org.springframework.http.ResponseEntity;
 
@@ -13,8 +16,10 @@ import java.util.List;
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
+@ExtendWith(MockitoExtension.class)
 class DownloadLeadControllerTest {
 
     @Mock
@@ -30,7 +35,6 @@ class DownloadLeadControllerTest {
 
     @BeforeEach
     void setUp() {
-        MockitoAnnotations.openMocks(this);
 
         resourceId = UUID.randomUUID();
         leadId = UUID.randomUUID();
@@ -55,7 +59,7 @@ class DownloadLeadControllerTest {
 
         ResponseEntity<DownloadLeadResponse> result = controller.createLead(request);
 
-        assertThat(result.getStatusCodeValue()).isEqualTo(201);
+        assertThat(result.getStatusCode().value()).isEqualTo(201);
         assertThat(result.getBody()).isEqualTo(response);
         verify(service).createLead(request);
     }
@@ -94,7 +98,7 @@ class DownloadLeadControllerTest {
     void deleteLead_shouldCallServiceAndReturnNoContent() {
         ResponseEntity<Void> result = controller.deleteLead(leadId);
 
-        assertThat(result.getStatusCodeValue()).isEqualTo(204);
+        assertThat(result.getStatusCode().value()).isEqualTo(204);
         verify(service).deleteLead(leadId);
     }
 }

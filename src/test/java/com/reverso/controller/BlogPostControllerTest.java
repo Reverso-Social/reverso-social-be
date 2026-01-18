@@ -1,13 +1,12 @@
 package com.reverso.controller;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.reverso.dto.response.BlogPostResponse;
 import com.reverso.service.interfaces.BlogPostService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.web.servlet.MockMvc;
@@ -29,124 +28,118 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc(addFilters = false)
 class BlogPostControllerTest {
 
-    @Autowired
-    private MockMvc mockMvc;
+        @Autowired
+        private MockMvc mockMvc;
 
-    @MockBean
-    private BlogPostService blogPostService;
+        @MockitoBean
+        private BlogPostService blogPostService;
 
-    @Autowired
-    private ObjectMapper objectMapper;
+        @Test
+        void updateBlogPost_shouldReturn200() throws Exception {
+                UUID id = UUID.randomUUID();
 
-    
-    @Test
-    void updateBlogPost_shouldReturn200() throws Exception {
-        UUID id = UUID.randomUUID();
+                BlogPostResponse response = BlogPostResponse.builder()
+                                .id(id)
+                                .title("Updated title")
+                                .build();
 
-        BlogPostResponse response = BlogPostResponse.builder()
-                .id(id)
-                .title("Updated title")
-                .build();
+                when(blogPostService.update(eq(id), any(), any()))
+                                .thenReturn(response);
 
-        when(blogPostService.update(eq(id), any(), any()))
-                .thenReturn(response);
+                MockMultipartFile data = new MockMultipartFile(
+                                "data",
+                                "",
+                                MediaType.APPLICATION_JSON_VALUE,
+                                """
+                                                {
+                                                  "title": "Updated title"
+                                                }
+                                                """.getBytes());
 
-        MockMultipartFile data = new MockMultipartFile(
-                "data",
-                "",
-                MediaType.APPLICATION_JSON_VALUE,
-                """
-                {
-                  "title": "Updated title"
-                }
-                """.getBytes()
-        );
+                mockMvc.perform(
+                                multipart("/api/blogposts/{id}", id)
+                                                .file(data)
+                                                .with(req -> {
+                                                        req.setMethod("PUT");
+                                                        return req;
+                                                }))
+                                .andExpect(status().isOk())
+                                .andExpect(jsonPath("$.title")
+                                                .value("Updated title"));
+        }
 
-        mockMvc.perform(
-                multipart("/api/blogposts/{id}", id)
-                        .file(data)
-                        .with(req -> {
-                            req.setMethod("PUT");
-                            return req;
-                        })
-        )
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.title")
-                        .value("Updated title"));
-    }
+        @Test
+        void findById_shouldReturnPost() throws Exception {
+                UUID id = UUID.randomUUID();
 
-    @Test
-    void findById_shouldReturnPost() throws Exception {
-        UUID id = UUID.randomUUID();
+                BlogPostResponse response = BlogPostResponse.builder()
+                                .id(id)
+                                .title("Post")
+                                .build();
 
-        BlogPostResponse response = BlogPostResponse.builder()
-                .id(id)
-                .title("Post")
-                .build();
+                when(blogPostService.findById(id))
+                                .thenReturn(response);
 
-        when(blogPostService.findById(id))
-                .thenReturn(response);
+                mockMvc.perform(get("/api/blogposts/{id}", id))
+                                .andExpect(status().isOk())
+                                .andExpect(jsonPath("$.title")
+                                                .value("Post"));
+        }
 
-        mockMvc.perform(get("/api/blogposts/{id}", id))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.title")
-                        .value("Post"));
-    }
+        @Test
+        void findBySlug_shouldReturnPost() throws Exception {
+                BlogPostResponse response = BlogPostResponse.builder()
+                                .slug("my-post")
+                                .title("Post")
+                                .build();
 
-    @Test
-    void findBySlug_shouldReturnPost() throws Exception {
-        BlogPostResponse response = BlogPostResponse.builder()
-                .slug("my-post")
-                .title("Post")
-                .build();
+                when(blogPostService.findBySlug("my-post"))
+                                .thenReturn(response);
 
-        when(blogPostService.findBySlug("my-post"))
-                .thenReturn(response);
+                mockMvc.perform(get("/api/blogposts/slug/{slug}", "my-post"))
+                                .andExpect(status().isOk())
+                                .andExpect(jsonPath("$.slug")
+                                                .value("my-post"));
+        }
 
-        mockMvc.perform(get("/api/blogposts/slug/{slug}", "my-post"))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.slug")
-                        .value("my-post"));
-    }
+        @Test
+        void findAll_shouldReturnList() throws Exception {
+                BlogPostResponse response = BlogPostResponse.builder()
+                                .title("Post")
+                                .build();
 
-    @Test
-    void findAll_shouldReturnList() throws Exception {
-        BlogPostResponse response = BlogPostResponse.builder()
-                .title("Post")
-                .build();
+                when(blogPostService.findAll(null, null))
+                                .thenReturn(List.of(response));
 
-        when(blogPostService.findAll(null, null))
-                .thenReturn(List.of(response));
+                mockMvc.perform(get("/api/blogposts"))
+                                .andExpect(status().isOk())
+                                .andExpect(jsonPath("$[0].title")
+                                                .value("Post"));
+        }
 
-        mockMvc.perform(get("/api/blogposts"))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$[0].title")
-                        .value("Post"));
-    }
+        @Test
+        void findLatest_shouldReturnList() throws Exception {
+                BlogPostResponse response = BlogPostResponse.builder()
+                                .title("Latest post")
+                                .build();
 
-    @Test
-    void findLatest_shouldReturnList() throws Exception {
-        BlogPostResponse response = BlogPostResponse.builder()
-                .title("Latest post")
-                .build();
+                when(blogPostService.findLatestPublished(5))
+                                .thenReturn(List.of(response));
 
-        when(blogPostService.findLatestPublished(5))
-                .thenReturn(List.of(response));
+                mockMvc.perform(get("/api/blogposts/latest")
+                                .param("limit", "5"))
+                                .andExpect(status().isOk())
+                                .andExpect(jsonPath("$[0].title")
+                                                .value("Latest post"));
+        }
 
-        mockMvc.perform(get("/api/blogposts/latest")
-                .param("limit", "5"))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$[0].title")
-                        .value("Latest post"));
-    }
+        @Test
+        void delete_shouldReturn204() throws Exception {
+                UUID id = UUID.randomUUID();
 
-    @Test
-    void delete_shouldReturn204() throws Exception {
-        UUID id = UUID.randomUUID();
+                doNothing().when(blogPostService).delete(id);
 
-        doNothing().when(blogPostService).delete(id);
-
-        mockMvc.perform(delete("/api/blogposts/{id}", id))
-                .andExpect(status().isNoContent());
-    }
+                mockMvc.perform(delete("/api/blogposts/{id}", id))
+                                .andExpect(status().isNoContent());
+        }
 }
